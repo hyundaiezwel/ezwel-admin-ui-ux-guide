@@ -74,6 +74,7 @@ const targetLabel = computed(() => NOTICE_TARGETS.find((t) => t.value === form.t
 <template>
   <div class="ws-page">
     <PageHead />
+    <p class="ws-desc ws-pgt-note">저장과 이미지 업로드는 목업이라 서버로 보내지 않고, 이미지는 이 브라우저 안에서만 보입니다.</p>
 
     <section class="ws-sec">
       <div class="ws-tit"><div class="ws-tit__l"><h2 class="ws-tit__h">공지 내용</h2></div></div>
@@ -95,6 +96,7 @@ const targetLabel = computed(() => NOTICE_TARGETS.find((t) => t.value === form.t
               <div class="opts" role="radiogroup" aria-label="게시 대상">
                 <label v-for="t in NOTICE_TARGETS" :key="t.value" class="opt"><RadioButton v-model="form.target" :value="t.value" :input-id="`nt-t-${t.value}`" />{{ t.label }}</label>
               </div>
+              <span class="ws-desc">게시 대상 선택지는 요구사항 확정 전 가정입니다.</span>
             </td>
           </tr>
           <tr>
@@ -118,10 +120,11 @@ const targetLabel = computed(() => NOTICE_TARGETS.find((t) => t.value === form.t
             <td class="body">
               <WsEditor
                 id="nt-body" v-model="form.body" :upload-image="mockUploadImage" :image-hosts="IMAGE_HOSTS" :max-length="BODY_MAX"
-                placeholder="공지 본문을 입력하세요. 이미지는 붙여넣거나 끌어 놓아도 됩니다."
+                placeholder="공지 본문을 입력해 주세요. 이미지는 붙여넣거나 끌어 놓아도 됩니다."
                 aria-label="공지 본문" :invalid="touched && !!errors.body" @invalid="bodyErr = $event"
               />
               <span v-if="touched && errors.body && !bodyErr" class="ws-err" role="alert">{{ errors.body }}</span>
+              <span class="ws-desc">본문 글자 수 상한(5,000자)은 요구사항 확정 전 가정입니다.</span>
             </td>
           </tr>
         </tbody>
@@ -138,14 +141,6 @@ const targetLabel = computed(() => NOTICE_TARGETS.find((t) => t.value === form.t
       <span />
     </div>
     <p v-if="touched && firstError" class="ws-err sum" role="alert">{{ firstError }}</p>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>게시 대상 · 본문 글자 수 상한(5,000자)은 요구사항 확정 전 가정입니다.</li>
-        <li>저장과 이미지 업로드는 목업입니다 — 서버로 보내지 않고, 이미지는 이 브라우저 안에서만 보입니다.</li>
-      </ul>
-    </div>
 
     <Dialog v-model:visible="preview" modal header="미리보기" :style="{ width: '760px' }" :dismissable-mask="false">
       <article class="pv">
@@ -169,10 +164,10 @@ const targetLabel = computed(() => NOTICE_TARGETS.find((t) => t.value === form.t
 <style scoped>
 .opts { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .opt { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-.ws-tb td.body { padding: 8px 10px; }
+.ws-tb td.body { padding: var(--ws-gap-intra); }
 .sum { margin-top: 8px; text-align: center; }
 .pv { display: grid; gap: 12px; }
-.pv__h { display: grid; gap: 4px; padding-bottom: 10px; border-bottom: 1px solid var(--ws-border); }
+.pv__h { display: grid; gap: 4px; padding-bottom: var(--ws-gap-intra); border-bottom: 1px solid var(--ws-border); }
 .pv__t { margin: 0; font-size: var(--ws-font-size-lg); font-weight: 700; }
 .pv__m { margin: 0; color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
 </style>

@@ -200,11 +200,16 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
 <template>
   <div class="ws-page">
     <PageHead />
+    <ul class="ws-notes ws-desc ws-pgt-note">
+      <li>생년월일, ID, 환불계좌는 <b>열 묶음을 켜야</b> 보이고, 켜도 가려져 있다. 반출은 엑셀 다운로드에서 사유를 등록해야 한다.</li>
+      <li>환불은 개인 2 : 기업 1로 나누고, 지원기관 몫은 회수한다.</li>
+      <li>이용정지를 하면 회원에게 안내가 나간다. AS-IS 통지 문구는 「협약파기」라 용어 통일이 필요하다.</li>
+    </ul>
 
-    <WsSearch :cols="['104px', '', '160px', '']" @search="search" @reset="reset">
+    <WsSearch @search="search" @reset="reset">
       <tr>
         <th scope="row"><label for="m-kw">검색어</label></th>
-        <td>
+        <td colspan="3">
           <div class="ws-kw">
             <Select v-model="f.kwType" :options="KW" aria-label="검색어 구분" class="ws-kw__type" />
             <InputText id="m-kw" v-model="f.kw" fluid :placeholder="`${f.kwType} 입력`" />
@@ -213,36 +218,34 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
         <th scope="row"><label for="m-co">기업 상태</label></th>
         <td><Select v-model="f.coSts" input-id="m-co" :options="[{ code: '', label: '전체' }, ...CO_STS.map((c) => ({ code: c, label: stateOf(c)?.label }))]" option-label="label" option-value="code" placeholder="전체" fluid /></td>
       </tr>
-      <template #detail>
-        <tr>
-          <th scope="row">성별</th>
-          <td>
-            <div class="ws-choices" role="radiogroup" aria-label="성별">
-              <div v-for="[v, l] in [['', '전체'], ['M', '남성'], ['F', '여성']]" :key="v" class="ws-radio"><RadioButton v-model="f.gender" :input-id="`m-g-${v}`" name="m-g" :value="v" /><label :for="`m-g-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-          <th scope="row">발전모델</th>
-          <td>
-            <div class="ws-choices" role="radiogroup" aria-label="발전모델 대상">
-              <div v-for="[v, l] in [['', '전체'], ['Y', '대상'], ['N', '비대상']]" :key="v" class="ws-radio"><RadioButton v-model="f.growth" :input-id="`m-gr-${v}`" name="m-gr" :value="v" /><label :for="`m-gr-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">동반성장 연계</th>
-          <td>
-            <div class="ws-choices" role="radiogroup" aria-label="동반성장 연계 참가">
-              <div v-for="[v, l] in [['', '전체'], ['Y', '참가'], ['N', '미참가']]" :key="v" class="ws-radio"><RadioButton v-model="f.partner" :input-id="`m-p-${v}`" name="m-p" :value="v" /><label :for="`m-p-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-          <th scope="row">입금 여부</th>
-          <td>
-            <div class="ws-choices" role="radiogroup" aria-label="입금 여부">
-              <div v-for="[v, l] in [['', '전체'], ['Y', '입금'], ['N', '미입금']]" :key="v" class="ws-radio"><RadioButton v-model="f.paid" :input-id="`m-pd-${v}`" name="m-pd" :value="v" /><label :for="`m-pd-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-        </tr>
-      </template>
+      <tr>
+        <th scope="row">성별</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="성별">
+            <div v-for="[v, l] in [['', '전체'], ['M', '남성'], ['F', '여성']]" :key="v" class="ws-radio"><RadioButton v-model="f.gender" :input-id="`m-g-${v}`" name="m-g" :value="v" /><label :for="`m-g-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+        <th scope="row">발전모델</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="발전모델 대상">
+            <div v-for="[v, l] in [['', '전체'], ['Y', '대상'], ['N', '비대상']]" :key="v" class="ws-radio"><RadioButton v-model="f.growth" :input-id="`m-gr-${v}`" name="m-gr" :value="v" /><label :for="`m-gr-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">동반성장 연계</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="동반성장 연계 참가">
+            <div v-for="[v, l] in [['', '전체'], ['Y', '참가'], ['N', '미참가']]" :key="v" class="ws-radio"><RadioButton v-model="f.partner" :input-id="`m-p-${v}`" name="m-p" :value="v" /><label :for="`m-p-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+        <th scope="row">입금 여부</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="입금 여부">
+            <div v-for="[v, l] in [['', '전체'], ['Y', '입금'], ['N', '미입금']]" :key="v" class="ws-radio"><RadioButton v-model="f.paid" :input-id="`m-pd-${v}`" name="m-pd" :value="v" /><label :for="`m-pd-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+      </tr>
     </WsSearch>
 
     <section class="ws-sec"><WsCountTabs v-model="tab" v-model:sub="sub" :tabs="tabs" label="회원 상태" /></section>
@@ -253,6 +256,7 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
           <h2 class="ws-tit__h">참여회원</h2>
           <span class="ws-total">총<strong>{{ fmt(total) }}</strong>명</span>
           <span class="ws-desc">선택 {{ sel.length }} · {{ ctx.year }}년 {{ bizLabel(ctx.biz) }}</span>
+          <span class="ws-desc">환불금액은 잔여 포인트에서 <b>지원기관 몫(1/4)을 뺀</b> 값이다.</span>
         </div>
         <div class="ws-tit__r">
           <MultiSelect v-model="shown" :options="GROUPS" placeholder="열 묶음" aria-label="표시할 열 묶음" :max-selected-labels="0" selected-items-label="열 {0}묶음 표시" class="cols" />
@@ -271,15 +275,6 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
       <WsPager v-model:first="first" v-model:rows="size" :total="total" />
       <Menu ref="rowMenu" :model="menuItems" popup />
     </section>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>생년월일 · ID · 환불계좌는 <b>열 묶음을 켜야</b> 보이고, 켜도 가려져 있다. 반출은 엑셀 다운로드의 사유 등록을 거친다.</li>
-        <li>환불금액은 잔여 포인트에서 <b>지원기관 몫(1/4)을 뺀</b> 값이다 — 개인 2 : 기업 1. 지원기관 몫은 회수한다.</li>
-        <li>이용정지를 하면 회원에게 안내가 나간다. AS-IS 통지 문구는 「협약파기」다 — 용어 통일 필요.</li>
-      </ul>
-    </div>
 
     <WsActionDialog
       v-if="act" v-model:visible="actOpen" :header="LABEL[act.a]" :danger="act.a === 'stop'"

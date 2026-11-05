@@ -83,8 +83,9 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
 <template>
   <div class="ws-page">
     <PageHead />
+    <p class="ws-desc ws-pgt-note">적발부터 소명 요구, 조치, 이용정지, 참여불가 회원 등록까지 상세 한 화면에서 이어서 처리한다.</p>
 
-    <WsSearch :cols="['104px', '', '160px', '']" @search="search" @reset="reset">
+    <WsSearch @search="search" @reset="reset">
       <tr>
         <th scope="row"><label for="s-from">기간</label></th>
         <td colspan="3"><WsPeriod id="s-from" v-model="f.range" v-model:basis="f.basis" :bases="['실행일', '등록일']" /></td>
@@ -100,14 +101,16 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
       </tr>
       <tr>
         <th scope="row">조치여부</th>
-        <td>
+        <td colspan="3">
           <div class="ws-choices" role="radiogroup" aria-label="조치여부">
             <div class="ws-radio"><RadioButton v-model="f.handle" input-id="s-h-all" name="s-h" value="" /><label for="s-h-all">전체</label></div>
             <div v-for="h in HANDLE" :key="h.code" class="ws-radio"><RadioButton v-model="f.handle" :input-id="`s-h-${h.code}`" name="s-h" :value="h.code" /><label :for="`s-h-${h.code}`">{{ h.label }}</label></div>
           </div>
         </td>
+      </tr>
+      <tr>
         <th scope="row">소명서</th>
-        <td>
+        <td colspan="3">
           <div class="ws-choices" role="radiogroup" aria-label="소명서 제출여부">
             <div class="ws-radio"><RadioButton v-model="f.report" input-id="s-r-all" name="s-r" value="" /><label for="s-r-all">전체</label></div>
             <div v-for="r in REPORT" :key="r.code" class="ws-radio"><RadioButton v-model="f.report" :input-id="`s-r-${r.code}`" name="s-r" :value="r.code" /><label :for="`s-r-${r.code}`">{{ r.label }}</label></div>
@@ -142,7 +145,7 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
 
     <section class="ws-sec">
       <div class="ws-tit">
-        <div class="ws-tit__l"><h2 class="ws-tit__h">적발 목록</h2><span class="ws-total">총<strong>{{ fmt(total) }}</strong>건</span></div>
+        <div class="ws-tit__l"><h2 class="ws-tit__h">적발 목록</h2><span class="ws-total">총<strong>{{ fmt(total) }}</strong>건</span><span class="ws-desc">연락처 · 이메일은 가려 보인다. 원문은 상세에서 열고, 열람이 기록된다.</span></div>
         <div class="ws-tit__r"><WsDownload :total="total" :limit="10000" /></div>
       </div>
       <QueryState :loading="loading" :error="error" :empty="rows.length === 0" :lines="10" @retry="reload">
@@ -150,13 +153,5 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
       </QueryState>
       <WsPager v-model:first="first" v-model:rows="size" :total="total" />
     </section>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>연락처 · 이메일은 목록에서 가린다. 원문은 상세에서 열고, 열람이 기록된다.</li>
-        <li>적발 → 소명 요구 → 조치 → 이용정지 → 참여불가 회원 등록이 상세 한 화면에서 이어진다.</li>
-      </ul>
-    </div>
   </div>
 </template>

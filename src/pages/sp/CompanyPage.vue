@@ -164,7 +164,7 @@ const DIALOG: Record<string, { notice: string; danger?: boolean; reason?: boolea
   apprCancel: { notice: '기업담당자에게 승인취소 LMS 및 E-Mail이 발송됩니다. 최종제출로 돌아간다.', danger: true, reason: true },
   break: {
     notice: '기업담당자에게 확인서 파기 LMS 및 E-Mail이 발송됩니다.', danger: true, reason: true,
-    warn: '파기 전에 입금 여부를 다시 확인하세요. 입금했는데 입금완료로 바뀌지 않은 상태에서 파기하면 환불을 시스템에서 진행할 수 없습니다.',
+    warn: '파기 전에 입금 여부를 다시 확인해 주세요. 입금했는데 입금완료로 바뀌지 않은 상태에서 파기하면 환불을 시스템에서 진행할 수 없습니다.',
   },
 }
 const TO: Record<string, string> = { start: '611', apprCancel: '410', break: '390' }
@@ -218,47 +218,51 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
 <template>
   <div class="ws-page">
     <PageHead />
+    <ul class="ws-notes ws-desc ws-pgt-note">
+      <li>행을 누르면 옆 패널이 열린다. 옆 패널에서 계좌 인증, 통장사본, 취소공문, 메모를 다룬다.</li>
+      <li><b>처리 ▾</b>에는 그 상태에서 할 수 있는 처리만 보인다.</li>
+      <li>일괄 버튼의 숫자는 <b>선택 중 할 수 있는 곳 / 선택</b>이다. 못 하는 곳은 실행 전에 확인 팝업에 먼저 나온다.</li>
+      <li>AS-IS의 전체 승인취소는 없앴다. RPA 축소판(참여개시와 등록완료만 보던 화면)은 <b>참여개시 › 등록완료</b> 칩이 대신한다.</li>
+    </ul>
 
-    <WsSearch :cols="['104px', '', '160px', '']" @search="search" @reset="reset">
+    <WsSearch @search="search" @reset="reset">
       <tr>
         <th scope="row"><label for="c-kw">검색어</label></th>
-        <td>
+        <td colspan="3">
           <div class="ws-kw">
             <Select v-model="f.kwType" :options="KW" aria-label="검색어 구분" class="ws-kw__type" />
             <InputText id="c-kw" v-model="f.kw" fluid :placeholder="`${f.kwType} 입력`" />
           </div>
         </td>
+      </tr>
+      <tr>
         <th scope="row">환불수단</th>
-        <td>
+        <td colspan="3">
           <div class="ws-choices" role="radiogroup" aria-label="환불수단">
             <div v-for="[v, l] in [['', '전체'], ['C', '기업'], ['P', '개인'], ['A', '기업+개인']]" :key="v" class="ws-radio"><RadioButton v-model="f.refund" :input-id="`c-rf-${v}`" name="c-rf" :value="v" /><label :for="`c-rf-${v}`">{{ l }}</label></div>
           </div>
         </td>
       </tr>
-      <template #detail>
-        <tr>
-          <th scope="row">발전모델</th>
-          <td>
-            <div class="ws-choices" role="radiogroup" aria-label="발전모델 대상">
-              <div v-for="[v, l] in [['', '전체'], ['Y', '대상'], ['N', '비대상']]" :key="v" class="ws-radio"><RadioButton v-model="f.growth" :input-id="`c-g-${v}`" name="c-g" :value="v" /><label :for="`c-g-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-          <th scope="row">취소공문</th>
-          <td>
-            <div class="ws-choices" role="radiogroup" aria-label="취소공문">
-              <div v-for="[v, l] in [['', '전체'], ['Y', '등록'], ['N', '미등록']]" :key="v" class="ws-radio"><RadioButton v-model="f.cancelDoc" :input-id="`c-cd-${v}`" name="c-cd" :value="v" /><label :for="`c-cd-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">장애인 채용</th>
-          <td colspan="3">
-            <div class="ws-choices" role="radiogroup" aria-label="장애인 근로자 채용 여부">
-              <div v-for="[v, l] in [['', '전체'], ['Y', '채용함'], ['N', '채용안함']]" :key="v" class="ws-radio"><RadioButton v-model="f.hire" :input-id="`c-h-${v}`" name="c-h" :value="v" /><label :for="`c-h-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-        </tr>
-      </template>
+      <tr>
+        <th scope="row">발전모델</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="발전모델 대상">
+            <div v-for="[v, l] in [['', '전체'], ['Y', '대상'], ['N', '비대상']]" :key="v" class="ws-radio"><RadioButton v-model="f.growth" :input-id="`c-g-${v}`" name="c-g" :value="v" /><label :for="`c-g-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+        <th scope="row">취소공문</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="취소공문">
+            <div v-for="[v, l] in [['', '전체'], ['Y', '등록'], ['N', '미등록']]" :key="v" class="ws-radio"><RadioButton v-model="f.cancelDoc" :input-id="`c-cd-${v}`" name="c-cd" :value="v" /><label :for="`c-cd-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+        <th scope="row">장애인 채용</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="장애인 근로자 채용 여부">
+            <div v-for="[v, l] in [['', '전체'], ['Y', '채용함'], ['N', '채용안함']]" :key="v" class="ws-radio"><RadioButton v-model="f.hire" :input-id="`c-h-${v}`" name="c-h" :value="v" /><label :for="`c-h-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+      </tr>
     </WsSearch>
 
     <section class="ws-sec">
@@ -303,17 +307,8 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
           </tbody>
         </table>
       </div>
-      <p class="ws-desc" style="margin-top: 8px">추가 인원 심사는 신청이 있는 행에서만 뜬다. 등록승인은 기초정보 심사에서, 대량 취소는 일괄 참여 취소에서 한다.</p>
+      <p class="ws-desc" style="margin-top: var(--ws-gap-intra)">추가 인원 심사는 신청이 있는 행에서만 뜬다. 등록승인은 기초정보 심사에서, 대량 취소는 일괄 참여 취소에서 한다.</p>
     </details>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>행을 누르면 옆 패널이 열린다 — 계좌 인증 · 통장사본 · 취소공문 · 메모. <b>처리 ▾</b>는 그 상태에서 할 수 있는 것만 보인다.</li>
-        <li>일괄 버튼의 숫자는 <b>선택 중 할 수 있는 곳 / 선택</b>이다. 못 하는 곳은 실행 전에 확인 팝업에 먼저 나온다.</li>
-        <li>AS-IS의 전체 승인취소는 없앴다. RPA 축소판(참여개시·등록완료만 보던 화면)은 <b>참여개시 › 등록완료</b> 칩이 대신한다.</li>
-      </ul>
-    </div>
 
     <!-- 처리 확인 -->
     <WsActionDialog
@@ -342,7 +337,7 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
           <tbody>
             <tr><th scope="row">사업자번호</th><td>{{ current.bizNo }} · {{ coFgLabel(current.coFg) }}</td></tr>
             <tr><th scope="row">소재지 · 경로</th><td>{{ current.region }} · {{ current.channel }}</td></tr>
-            <tr><th scope="row">참여인원</th><td>최초 {{ current.first }} + 추가 {{ current.added }} = <b>{{ current.final }}명</b><span v-if="current.addReq" class="ws-badge ws-badge--warning" style="margin-left: 8px">추가 {{ current.addReq }}명 대기</span></td></tr>
+            <tr><th scope="row">참여인원</th><td>최초 {{ current.first }} + 추가 {{ current.added }} = <b>{{ current.final }}명</b><span v-if="current.addReq" class="ws-badge ws-badge--warning" style="margin-left: var(--ws-gap-intra)">추가 {{ current.addReq }}명 대기</span></td></tr>
             <tr><th scope="row">장애인 채용</th><td>{{ current.hire.yn ? `채용함 · ${current.hire.hired}명` : '채용안함' }}</td></tr>
             <tr><th scope="row">가상계좌</th><td>지정은행 {{ current.vacct }}</td></tr>
             <tr>
@@ -360,7 +355,7 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
             <tr>
               <th scope="row"><label for="c-doc">취소공문</label></th>
               <td>
-                <p v-if="current.cancelDoc" class="ws-desc" style="margin-bottom: 6px">등록됨 — 새로 올리면 바뀐다</p>
+                <p v-if="current.cancelDoc" class="ws-desc" style="margin-bottom: var(--ws-gap-item)">등록됨 — 새로 올리면 바뀐다</p>
                 <WsUpload id="c-doc" v-model="cancelFile" :accept="['png', 'gif', 'jpg', 'pdf']" />
               </td>
             </tr>
@@ -421,7 +416,7 @@ const fmt = (x: number) => x.toLocaleString('ko-KR')
 .skip { display: grid; gap: 4px; max-height: 160px; overflow: auto; }
 .skip li { display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius-sm); }
 .pn { display: grid; gap: var(--ws-gap-block); }
-.pn__head { display: flex; align-items: center; gap: 10px; }
+.pn__head { display: flex; align-items: center; gap: var(--ws-gap-intra); }
 .pn__row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .pn__h { margin-bottom: 8px; font-weight: 600; }
 .pn__acts { display: flex; flex-wrap: wrap; gap: 6px; }

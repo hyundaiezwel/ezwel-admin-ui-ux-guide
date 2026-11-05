@@ -50,17 +50,18 @@ const { rows: groups, loading, error, reload } = useMockQuery(
 )
 onMounted(reload)
 const details = computed(() => DETAILS[selected.value.code] ?? [])
+/** 뱃지 칸 뜻 — 표 머리 「?」 도움말(UI-32) */
+const BADGE_HELP = '뱃지 색(tone)은 코드 속성으로 내려온다. 기획이 라벨이나 색을 바꿔도 프론트 배포가 필요 없다.'
 </script>
 
 <template>
   <div class="ws-page">
     <PageHead />
 
-    <WsSearch :cols="['72px', '', '', '', '', '']" @search="reload" @reset="keyword = ''; reload()">
+    <WsSearch @search="reload" @reset="keyword = ''; reload()">
       <tr>
         <th scope="row"><label for="c-kw">검색어</label></th>
         <td><InputText id="c-kw" v-model="keyword" fluid placeholder="그룹명 또는 코드" /></td>
-        <td colspan="4" />
       </tr>
     </WsSearch>
 
@@ -90,11 +91,11 @@ const details = computed(() => DETAILS[selected.value.code] ?? [])
       <section class="ws-sec">
         <div class="ws-tit">
           <div class="ws-tit__l"><h2 class="ws-tit__h">{{ selected.name }}</h2><span class="code">{{ selected.code }}</span></div>
-          <div class="ws-tit__r"><Button label="코드 추가" severity="secondary" outlined class="ws-line" /></div>
+          <div class="ws-tit__r"><Button label="코드 추가" severity="secondary" outlined /></div>
         </div>
         <table v-if="details.length" class="ws-gtb">
           <caption class="ws-sr-only">{{ selected.name }} 하위 코드</caption>
-          <thead><tr><th scope="col">코드</th><th scope="col">이름</th><th scope="col">뱃지</th><th scope="col">정렬</th><th scope="col">사용</th></tr></thead>
+          <thead><tr><th scope="col">코드</th><th scope="col">이름</th><th scope="col">뱃지<span v-tooltip.top="BADGE_HELP" class="ws-help" tabindex="0" role="img" :aria-label="`뱃지 도움말: ${BADGE_HELP}`">?</span></th><th scope="col">정렬</th><th scope="col">사용</th></tr></thead>
           <tbody>
             <tr v-for="d in details" :key="d.code">
               <td class="code">{{ d.code }}</td>
@@ -106,12 +107,6 @@ const details = computed(() => DETAILS[selected.value.code] ?? [])
           </tbody>
         </table>
         <div v-else class="ws-empty" style="border-top: 1px solid var(--ws-border-strong)">이 그룹의 하위 코드는 목업에 없습니다.</div>
-
-        <div class="ws-msg" style="margin-top: 12px">
-          <ul>
-            <li>뱃지 색(<code>tone</code>)이 코드 속성으로 내려온다. 기획이 라벨·색을 바꿔도 프론트 배포가 필요 없다.</li>
-          </ul>
-        </div>
       </section>
     </div>
   </div>
