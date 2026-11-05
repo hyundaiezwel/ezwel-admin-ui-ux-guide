@@ -38,7 +38,7 @@ export function useMockQuery<T>(
     if (seq !== latest) return
 
     if (opts.failIf?.()) {
-      error.value = 'QUERY_FAILED: 조회에 실패했습니다. 잠시 후 다시 시도하세요.'
+      error.value = 'QUERY_FAILED: 조회에 실패했습니다. 잠시 후 다시 시도해 주세요.'
       rows.value = []
     } else {
       rows.value = loader()
