@@ -147,7 +147,7 @@ function addMemo() {
     <section :id="sections[1].id" class="ws-sec">
       <div class="ws-tit">
         <div class="ws-tit__l"><h2 class="ws-tit__h">협약정보</h2></div>
-        <div class="ws-tit__r"><Button label="제출서류 보기" severity="secondary" outlined class="ws-line" @click="docsOpen = true" /></div>
+        <div class="ws-tit__r"><Button label="제출서류 보기" severity="secondary" outlined @click="docsOpen = true" /></div>
       </div>
       <table class="ws-tb">
         <colgroup><col style="width: 140px" /><col /><col style="width: 140px" /><col /></colgroup>
@@ -171,8 +171,8 @@ function addMemo() {
       <div class="ws-tit">
         <div class="ws-tit__l"><h2 class="ws-tit__h">입금정보</h2><span class="ws-desc">기업+개인 3 : 지원기관 1 — 분할 입금 불가</span></div>
         <div class="ws-tit__r">
-          <Button label="입금확인증 출력" severity="secondary" outlined class="ws-line" :disabled="!['520', '610'].includes(row.sts)" @click="notify('입금확인증을 출력했습니다(미리보기)')" />
-          <Button label="참여증서 출력" severity="secondary" outlined class="ws-line" :disabled="row.sts !== '610'" @click="notify('참여증서를 출력했습니다(미리보기)')" />
+          <Button label="입금확인증 출력" severity="secondary" outlined :disabled="!['520', '610'].includes(row.sts)" @click="notify('입금확인증을 출력했습니다(미리보기)')" />
+          <Button label="참여증서 출력" severity="secondary" outlined :disabled="row.sts !== '610'" @click="notify('참여증서를 출력했습니다(미리보기)')" />
         </div>
       </div>
       <table class="ws-gtb">
@@ -227,7 +227,7 @@ function addMemo() {
         <Textarea v-model="memo" rows="2" fluid maxlength="100" placeholder="메모 입력 — 100자" aria-label="새 메모" />
         <Button label="등록" severity="secondary" outlined :disabled="!memo.trim()" @click="addMemo" />
       </div>
-      <table class="ws-gtb" style="margin-top: 8px">
+      <table class="ws-gtb" style="margin-top: var(--ws-gap-intra)">
         <thead><tr><th scope="col" style="width: 64px">번호</th><th scope="col">메모</th><th scope="col" style="width: 110px">등록일</th><th scope="col" style="width: 90px">담당자</th></tr></thead>
         <tbody><tr v-for="m in memos" :key="m.no"><td class="ws-num">{{ m.no }}</td><td>{{ m.text }}</td><td>{{ m.at }}</td><td>{{ m.by }}</td></tr></tbody>
       </table>
