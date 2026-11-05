@@ -2,33 +2,25 @@
 /**
  * 조회 영역 — 원본 `shbox`.
  *
- * 목록 화면 다섯 장이 똑같이 쓴다. 제목줄(초기화 · 조회(F2) · 상세조회) + 한 줄 폼 +
- * 아래 가운데 접기 손잡이. 화면은 `<tr>`만 넘긴다 — 라벨과 칸의 폭은 `cols`가 정한다.
+ * 목록 화면이 똑같이 쓴다. 제목줄(초기화 · 조회(F2) · 상세조회) + 조회 칸 격자 +
+ * 아래 가운데 접기 손잡이. 화면은 `<tr>`(항목 이름 `<th>` + 입력칸 `<td>` 쌍)만 넘긴다.
+ *
+ * **칸 배치는 화면이 정하지 않는다(UI-02).** 이름 칸 160 · 한 줄 3칸 · 좁으면 2칸 → 1칸으로
+ * `layout.css`의 격자가 놓는다. 화면이 고를 수 있는 것은 입력칸 폭 셋뿐이다 —
+ * 보통(기본) · 길게(`colspan="3"`, 날짜 범위 · 구분+검색어) · 짧게(`td.ws-sh__s`).
+ *
+ * **상세조회 접기는 조회 항목이 6개를 넘는 화면만 쓴다.** 기본으로 보이는 조건은 3줄까지다.
  *
  * **조회 버튼만 초록이다.** 원본 `.shbox .titbox .btn_cm.pri` 규칙이다.
  * F2는 보이는 화면에서만 받는다(`useHotkey`).
  */
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import Button from 'primevue/button'
 import { useHotkey } from '../app/useHotkey'
 
-const props = withDefaults(defineProps<{ cols?: string[]; title?: string }>(), {
-  // 라벨 · 칸 × 3 — 원본 조회 영역은 한 줄에 셋이 기본이다
-  cols: () => ['72px', '', '132px', '', '132px', ''],
-  title: '조회',
-})
+withDefaults(defineProps<{ title?: string }>(), { title: '조회' })
 const emit = defineEmits<{ search: []; reset: [] }>()
 const detail = ref(false)
-/**
- * 라벨 칸은 **글자에 맞춰 늘어난다**(width 1% + nowrap). 고정 폭이면 여백(좌 60 · 우 19)을 빼고
- * 3~4자밖에 안 들어가서 '사업자등록번호' 같은 라벨이 입력 칸 밑으로 들어갔다.
- * 같은 열의 라벨은 행이 달라도 가장 긴 라벨 폭으로 맞춰진다. 입력 칸은 남은 폭을 똑같이 나눈다.
- * `cols`의 라벨 폭(짝수 번째)은 이제 쓰지 않는다 — 입력 칸 폭(홀수 번째)만 화면이 정할 수 있다.
- */
-const colStyles = computed(() => {
-  const pairs = Math.max(1, Math.floor(props.cols.length / 2))
-  return props.cols.map((w, i) => (i % 2 === 0 ? { width: '1%' } : { width: w || `${Math.floor(100 / pairs)}%` }))
-})
 
 useHotkey('F2', () => emit('search'))
 </script>
@@ -47,7 +39,6 @@ useHotkey('F2', () => emit('search'))
     </div>
     <div class="ws-sh__body">
       <table class="ws-tb">
-        <colgroup><col v-for="(st, i) in colStyles" :key="i" :style="st" /></colgroup>
         <tbody>
           <slot />
           <slot v-if="detail" name="detail" />

@@ -150,9 +150,9 @@ const fmt = (n: number) => (n > 999 ? '999+' : String(n))
 .sh {
   display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: var(--ws-top-h) minmax(0, 1fr);
   height: 100%; overflow: hidden; background: var(--ws-surface);
-  /* 앱 전체 최소 폭 = 레일 64 + 본문 최소 880. 이보다 좁은 창은 상단 바까지 함께 가로 스크롤한다 —
-     상단 바만 계속 줄이면 칩끼리 겹쳤다(약 660px 창, 2026-10-01) */
-  min-width: calc(var(--ws-side-w-rail) + 880px);
+  /* 최소 폭을 두지 않는다(UI-10, WCAG 1.4.10) — 640px(1280의 200% 확대)에서도 틀이 가로 스크롤을 만들지 않는다.
+     예전 944px(레일 64 + 본문 880) 고정은 상단 바 칩이 겹치던 때(2026-10-01) 것이다. 지금 상단 바는 칩 최소 폭(150)이
+     있고 1152 미만 검색 접힘 · 1024 미만 서비스명 숨김으로 640에서도 약 420px에 들어간다. 넓은 내용(표)은 그 영역 안에서만 스크롤한다 */
 }
 .sh-top { grid-column: 1 / -1; }
 
@@ -164,14 +164,15 @@ const fmt = (n: number) => (n > 999 ? '999+' : String(n))
 }
 .is-rail .sd { width: var(--ws-side-w-rail); }
 
-.sd__nav { flex: 1; min-height: 0; overflow-y: auto; overflow-x: visible; padding: 8px; scrollbar-color: var(--ws-side-scroll-thumb) transparent; }
+.sd__nav { flex: 1; min-height: 0; overflow-y: auto; overflow-x: visible; padding: var(--ws-gap-intra); scrollbar-color: var(--ws-side-scroll-thumb) transparent; }
 .sd__nav::-webkit-scrollbar-thumb { background-color: var(--ws-side-scroll-thumb); }
-.sd__list { display: flex; flex-direction: column; gap: var(--ws-space-0-5, 2px); }
+.sd__list { display: flex; flex-direction: column; gap: var(--ws-space-hair); }
 .sd__g { position: relative; }
 
-/* 행 40 · 아이콘 상자 20 고정 — 라벨 시작점이 한 축에 선다(DS1 navigation.md §2-3) */
+/* 행 40 · 아이콘 상자 20 고정 — 라벨 시작점이 한 축에 선다(DS1 navigation.md §2-3).
+   왼쪽 14 · 하위 42 · 말단 52는 간격이 아니라 정렬 계산값(아래 주석)이라 단계표 예외로 둔다 */
 .sd__row {
-  position: relative; display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; padding: 0 12px 0 14px;
+  position: relative; display: flex; align-items: center; gap: var(--ws-gap-intra); width: 100%; height: 40px; padding: 0 var(--ws-gap-inter) 0 14px;
   border: 0; border-radius: var(--ws-radius); background: none; color: var(--ws-side-fg);
   font: inherit; text-align: left; text-decoration: none; cursor: pointer;
 }
@@ -184,29 +185,29 @@ const fmt = (n: number) => (n > 999 ? '999+' : String(n))
 .sd__row.is-within { color: var(--ws-text-inverse); font-weight: 700; }
 .sd__chev { flex: none; color: var(--ws-side-muted); transition: transform 0.15s; }
 .sd__chev.is-open { transform: rotate(180deg); }
-.sd__sub { margin: 2px 0 4px; display: flex; flex-direction: column; gap: 2px; }
-.sd__cnt { flex: none; min-width: 20px; padding: 0 6px; border-radius: 10px; background: var(--ws-count-bg); color: var(--ws-text-inverse); font-size: var(--ws-font-size-sm); font-weight: 700; line-height: 18px; text-align: center; font-variant-numeric: tabular-nums; }
-.sd__dot { position: absolute; top: 8px; right: 12px; width: 6px; height: 6px; border-radius: 50%; background: var(--ws-count-bg); }
+.sd__sub { margin: var(--ws-space-hair) 0 var(--ws-gap-adjacent); display: flex; flex-direction: column; gap: var(--ws-space-hair); }
+.sd__cnt { flex: none; min-width: 20px; padding: 0 var(--ws-gap-item); border-radius: var(--ws-radius-pill); background: var(--ws-count-bg); color: var(--ws-text-inverse); font-size: var(--ws-font-size-sm); font-weight: 700; line-height: 18px; text-align: center; font-variant-numeric: tabular-nums; }
+.sd__dot { position: absolute; top: var(--ws-gap-intra); right: var(--ws-gap-inter); width: 6px; height: 6px; border-radius: 50%; background: var(--ws-count-bg); }
 
 .is-rail .sd__row { justify-content: center; padding: 0; }
-.is-rail .sd__nav { padding-inline: 8px; }
+.is-rail .sd__nav { padding-inline: var(--ws-gap-intra); }
 /* 레일에서는 스크롤을 푼다 — overflow-y:auto면 x도 auto로 계산돼 옆으로 뜨는 펼침 메뉴가 잘린다.
    ponytail: 레일 아이콘이 화면 높이를 넘게 늘면 펼침 메뉴를 position:fixed로 바꾼다 */
 .is-rail .sd__nav { overflow: visible; }
 
 .sd__fly {
-  position: absolute; z-index: 40; left: calc(100% + 8px); top: 0; min-width: 200px; padding: 6px;
+  position: absolute; z-index: 40; left: calc(100% + var(--ws-gap-intra)); top: 0; min-width: var(--ws-field-w-m); padding: var(--ws-gap-item);
   border: 1px solid var(--ws-border); border-radius: var(--ws-radius-lg); background: var(--ws-surface); color: var(--ws-text);
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.16);
+  box-shadow: var(--ws-shadow-pop);
 }
-/* 아이콘 → 메뉴로 마우스를 옮길 때 8px 틈에서 mouseleave가 나 닫히지 않게 다리를 놓는다 */
-.sd__fly::before { content: ''; position: absolute; top: 0; bottom: 0; right: 100%; width: 10px; }
-.sd__fly-h { padding: 6px 10px; font-size: var(--ws-font-size-sm); font-weight: 700; color: var(--ws-text-muted); }
-.sd__fly-i { display: flex; justify-content: space-between; gap: 8px; padding: 8px 10px; border-radius: var(--ws-radius); color: var(--ws-text); text-decoration: none; }
+/* 아이콘 → 메뉴로 마우스를 옮길 때 8px 틈에서 mouseleave가 나 닫히지 않게 다리를 놓는다(틈보다 넓게) */
+.sd__fly::before { content: ''; position: absolute; top: 0; bottom: 0; right: 100%; width: var(--ws-gap-inter); }
+.sd__fly-h { padding: var(--ws-gap-item) var(--ws-gap-intra); font-size: var(--ws-font-size-sm); font-weight: 700; color: var(--ws-text-muted); }
+.sd__fly-i { display: flex; justify-content: space-between; gap: var(--ws-gap-intra); padding: var(--ws-gap-intra); border-radius: var(--ws-radius); color: var(--ws-text); text-decoration: none; }
 .sd__fly-i:hover { background: var(--ws-surface-hover); text-decoration: none; }
 .sd__fly-i.is-on { background: var(--ws-surface-selected); color: var(--ws-text-brand); font-weight: 700; }
 
-.sd__foot { flex: none; display: flex; flex-direction: column; gap: 2px; padding: 8px; border-top: 1px solid var(--ws-side-line); }
+.sd__foot { flex: none; display: flex; flex-direction: column; gap: var(--ws-space-hair); padding: var(--ws-gap-intra); border-top: 1px solid var(--ws-side-line); }
 
 
 /* --- 본문 ----------------------------------------------------------------- */
