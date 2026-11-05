@@ -32,10 +32,11 @@ Artifact 시안은 Google Fonts만 실을 수 있어 앱과 시안이 같은 글
 ## UI/UX 규약
 
 화면을 만들거나 고칠 때는 [docs/ui-conventions.md](docs/ui-conventions.md)를 따른다. 검토 지적을 번호 붙은 공통 규칙(`UI-nn`)으로 남긴 문서다. 규칙마다 구현 위치와 자동 검사를 함께 적었다.
-- `npm run check:ui` — 정적 검사(조회 영역 · 전역 조건 · '전체' 값 · 파일 첨부 · 표 칸 flex · 조회 영역 인라인 폭 · 예약 클래스 재정의)
-- `npm run test` — `src/lib` 단위 시험(vitest). Pages 배포 전에 돈다
+- `npm run check:ui` — 정적 검사(조회 영역 · 전역 조건 · '전체' 값 · 파일 첨부 · 표 칸 flex · 조회 영역 인라인 폭 · `:cols` · 6개 이하 상세조회 · 알약 버튼 · 예약 클래스 재정의)
+- `npm run test` — `src/lib` · `src/app` · `src/ws` 단위 시험(vitest). Pages 배포 전에 돈다
+- **2026-11-05 디자인 점검 역반영.** 이 저장소를 복사해 쓰는 목업의 디자인 점검 권장안 8가지(아래 결정 D1~D8과 다른 번호라 「점검 D1~D8」로 적는다)를 공통 값 · 공통 부품 · 규칙으로 올렸다 — 640px 가로 스크롤 없음(UI-10) · 조회 영역 3·2·1칸(UI-02 · UI-13) · 안내문 자리(UI-32) · 합계 한 모양(UI-33) · 문구(UI-34) · 치수 단계(UI-35). 원본 실측값에서 벗어난 근거는 `ui-conventions.md` 변경 이력에 있다
 - 접근성 [docs/accessibility.md](docs/accessibility.md) · 반복 판단 [docs/patterns.md](docs/patterns.md) · 감사 교훈 [docs/lessons-from-audits.md](docs/lessons-from-audits.md)
-- `npm run dev` 후 `SB_URL=http://localhost:5320 npm run check:responsive` — 화면을 1280 · 1024 폭으로 열어 깨짐 · 상단 바 넘침을 잰다
+- `npm run dev` 후 `SB_URL=http://localhost:5320 npm run check:responsive` — 화면을 1280 · 1024 · 640 폭으로 열어 깨짐 · 가로 넘침 · 상단 바 넘침을 잰다
 
 ## 결정 — D1~D8
 
@@ -111,7 +112,10 @@ Aura는 입력 글자 크기를 토큰이 아니라 CSS에 `1rem`으로 박는�
 | `.btn_cm.sec` 회색 | 보조 | `severity="secondary"` |
 | `.btn_cm` 흰색 | 기본 | `severity="secondary" outlined` |
 | — | 위험 | `severity="danger" outlined` |
-| 윤곽 알약 | 그리드 제목줄 보조(CSV·행추가) | `severity="secondary" outlined class="ws-line"` |
+| 윤곽 알약 | 그리드 제목줄 보조(CSV·행추가) | `severity="secondary" outlined` — 알약 모양(`.ws-line`)은 2026-11-05 걷었다(UI-35) |
+
+**버튼 높이는 32 · 24 두 가지뿐이다**(`--ws-btn-h` · `--ws-btn-h-sm`, 로그인 40은 위 표의 예외). 모서리는 `--ws-radius` 하나.
+원본의 22(제목 옆 칩) · 28(하위 상태 칩) · 30(빠른 기간 안쪽 버튼) · 알약은 디자인 점검 역반영(점검 D4)에서 버렸다.
 
 세그먼트는 고른 칸을 저장 버튼 색으로 채운다. Aura 기본은 회색 판 위 흰 칸이라 고른 칸과 판이 1.1:1이다.
 
@@ -154,7 +158,7 @@ Tabulator 기본 스킨(`tabulator_simple`)은 행 글자 `#333` · 범위 강�
 - **상단바 색** `--ws-top-bg #1f2d2b` — 사이드바(#2a403d)보다 한 단 짙게 해 ㄱ자 틀 안에서 둘을 가른다. 글자 11.95 · 보조 6.89 · 검색칸 테두리 4.5
 - **접기(레일 64px)** 는 상단바 ☰. 상태는 `ds3-rail`. 레일에서 그룹 아이콘에 올리면 옆으로 하위 메뉴가 뜬다
 - 레일에서는 메뉴 영역의 스크롤을 푼다. `overflow-y: auto`면 x도 `auto`로 계산돼 옆으로 뜨는 메뉴가 잘린다
-- 1024 폭까지 한 줄에 든다 — 검색칸이 `min(440px, 36vw)`로 줄어든다
+- 640 폭까지 한 줄에 든다 — 검색칸이 `min(440px, 36vw)`로 줄다가 1152 미만에서 돋보기로 접히고, 1024 미만에서 서비스명이 빠진다. 틀에 최소 폭이 없다(UI-10)
 - **스크롤바**는 토큰으로 칠한다 — 트랙 투명 · 손잡이만(바탕과 3:1). 사이드바는 레일 색 위 전용 손잡이
 
 ---
@@ -170,7 +174,7 @@ src/ws/           디자인 시스템 층
   layout.css        화면 블록 — page · pgt · sh · sec/tit · tb · gtb · btnbox · card
   primitives.css    조립 부품 — stack · cluster · grid · sidebar · center · prose (DS1에서)
   controls.css      PrimeVue가 맡지 않는 것 — 뱃지 · 체크 배치 · 빈 상태
-  WsSearch.vue      조회 영역 — 목록 화면 다섯 장이 같이 쓴다
+  WsSearch.vue      조회 영역 — 목록 화면이 같이 쓴다. 칸 배치는 layout.css 격자(3 · 2 · 1칸)
   notify.ts         토스트 — PrimeVue ToastEventBus
   (지원 사업 미리보기에서 더한 것 — 아래 절)
   WsPeriod · WsPager · WsActionDialog · WsResultDialog · WsDownload · WsPickField
@@ -187,7 +191,7 @@ src/sp/           지원 사업 — 제안 메뉴 · 코드 사전 · 전역 조
 ### 새 화면 만드는 순서
 
 1. 루트는 `.ws-page`, 첫 자식은 `<PageHead />`. 대시보드·통계면 `.ws-page--canvas`를 더하고 구획에 `.ws-card`
-2. 목록이면 `<WsSearch>`에 `<tr>`만 넘긴다 — 라벨·칸 세 쌍이 한 줄
+2. 목록이면 `<WsSearch>`에 `<tr>`만 넘긴다 — 라벨·칸 세 쌍이 한 줄(좁으면 2 · 1). 칸 폭은 보통 · 길게(`colspan="3"`) · 짧게(`.ws-sh__s`)만 고른다(UI-02). 안내문은 대상 옆(UI-32), 합계는 `.ws-sum`(UI-33)
 3. 구획은 `.ws-sec` = `.ws-tit`(왼쪽 제목·건수 / 오른쪽 버튼) + 내용. 제목줄 → 내용 12px
 4. 컨트롤은 PrimeVue를 그대로 쓴다. 크기 prop을 주지 않으면 32다
 5. 조회는 primary, 저장은 contrast — 위 버튼 표
@@ -218,7 +222,7 @@ src/sp/           지원 사업 — 제안 메뉴 · 코드 사전 · 전역 조
 
 | | 결과 |
 |---|---|
-| 블록 간격 | `[18, 24]` — 제목 영역 아래 18, 나머지 24 |
+| 블록 간격 | `[18, 24]` — 제목 영역 아래 18, 나머지 24. **2026-11-05 정식 간격에 맞춰 제목 아래를 16으로 바꿨다**(UI-35) |
 | 컨트롤 높이 | 32 (로그인 40) — 입력 · 선택 · 다중선택 · 숫자 · 날짜 · 자동완성 · 버튼 · 세그먼트 |
 | 그리드 행 | 35 |
 | 그려진 글자 대비 | 미달 0 — 화면당 33~439개 글자 요소, 로고 제외 |

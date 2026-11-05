@@ -14,7 +14,10 @@ for (const f of walk('src/pages')) {
   if (/(l|label):\s*'전체',\s*(v|value):\s*''/.test(src)) hit('UI-04', "'전체' 선택지 값은 'ALL'")
   if (/<input[^>]*type="file"/.test(src)) hit('UI-17', '파일은 WsUpload')
   const sh = src.match(/<WsSearch[\s\S]*?<\/WsSearch>/)?.[0] ?? ''
-  if (/style="[^"]*width/.test(sh)) hit('UI-02', '조회 영역 인라인 폭 금지(cols · .ws-kw 로)')
+  if (/style="[^"]*width/.test(sh)) hit('UI-02', '조회 영역 인라인 폭 금지(입력칸 폭은 보통 · colspan="3" · .ws-sh__s 셋)')
+  if (/<WsSearch[^>]*:cols=/.test(sh)) hit('UI-02', 'WsSearch cols 는 없어졌다 — 칸 배치는 공통 격자가 정한다')
+  if (/#detail/.test(sh) && (sh.match(/<th\b/g) ?? []).length <= 6) hit('UI-02', '상세조회 접기는 조회 항목이 6개를 넘을 때만')
+  if (/class="[^"]*\bws-line\b/.test(src)) hit('UI-35', '윤곽 알약(.ws-line)은 없어졌다 — severity="secondary" outlined')
   if ([...src.matchAll(/<t[dh]\b[^>]*class="([^"]+)"/g)].some((m) => m[1].split(/\s+/).some((c) => flexCls.has(c))) || /\bt[dh]\b[^{,]*\{[^}]*display:\s*flex/.test(style)) hit('UI-07', '표 칸(td·th)에 flex 금지 — 안쪽 div 에')
 }
 
