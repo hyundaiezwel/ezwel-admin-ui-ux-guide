@@ -43,9 +43,9 @@ const fmt = (n: number) => n.toLocaleString('ko-KR')
 .ct__t[aria-checked='true'] { border-bottom-color: var(--ws-action-primary); color: var(--ws-text); font-weight: 700; }
 .ct__t[aria-checked='true'] b { color: var(--ws-text-brand); }
 .ct__t:focus-visible, .ct__s:focus-visible { outline: none; box-shadow: var(--ws-focus-ring); }
-.ct__subs { display: flex; flex-wrap: wrap; gap: 6px; }
+.ct__subs { display: flex; flex-wrap: wrap; gap: var(--ws-gap-item); }
 .ct__s {
-  height: 28px; padding: 0 10px; border: 1px solid var(--ws-field-border); border-radius: var(--ws-radius-pill);
+  height: var(--ws-btn-h-sm); padding: 0 var(--ws-gap-intra); border: 1px solid var(--ws-field-border); border-radius: var(--ws-radius-pill); /* 하위 상태 칩 — 작은 높이 24(점검 D4, 28이었다) */
   background: var(--ws-surface); color: var(--ws-text-sub); font: inherit; font-size: var(--ws-font-size-md); cursor: pointer;
 }
 .ct__s:hover:not(:disabled) { color: var(--ws-text); }

@@ -75,7 +75,7 @@ function submit() {
 .lg__card {
   margin-top: 40px; padding: 38px 136px 32px;
   border: 1px solid var(--ws-border-soft); border-radius: 15px; background: var(--ws-surface);
-  box-shadow: 0 5px 20px rgb(0 0 0 / 0.12);
+  box-shadow: var(--ws-shadow-dialog);
 }
 @media (max-width: 640px) { .lg__card { padding: 32px 24px; } .lg__box { translate: -50% -50%; } }
 .lg__tit { margin-bottom: 24px; font-size: 20px; line-height: 28px; font-weight: 700; text-align: center; }

@@ -51,7 +51,7 @@ const visible = defineModel<boolean>('visible', { required: true })
 .rs__sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .rs__sum div { padding: 12px; border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius); background: var(--ws-surface-sunken); }
 .rs__sum dt { color: var(--ws-text-sub); font-size: var(--ws-font-size-md); }
-.rs__sum dd { margin-top: 4px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.rs__sum dd { margin-top: var(--ws-gap-adjacent); font-size: var(--ws-font-kpi); font-weight: 700; font-variant-numeric: tabular-nums; }
 .rs__sum .is-ok { color: var(--ws-text-success); }
 .rs__sum .is-bad { color: var(--ws-text-danger); }
 .rs__sum .is-warn { color: var(--ws-text-warning); }

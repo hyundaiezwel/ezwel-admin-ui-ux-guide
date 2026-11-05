@@ -97,8 +97,8 @@ const meItems = computed<PvItem[]>(() => [
 
 <style scoped>
 .tp {
-  /* 왼쪽 14 — ☰(36) 가운데가 32px에 온다. 사이드바 아이콘 가운데(펼침 · 레일 모두 32)와 한 세로줄 */
-  display: flex; align-items: center; gap: 8px; height: var(--ws-top-h); padding: 0 12px 0 14px;
+  /* 왼쪽 14 — ☰(36) 가운데가 32px에 온다. 사이드바 아이콘 가운데(펼침 · 레일 모두 32)와 한 세로줄. 정렬 계산값이라 단계표 예외 */
+  display: flex; align-items: center; gap: var(--ws-gap-intra); height: var(--ws-top-h); padding: 0 var(--ws-gap-inter) 0 14px;
   background: var(--ws-top-bg); color: var(--ws-top-fg); border-bottom: 1px solid var(--ws-top-line);
 }
 .tp__ib {
@@ -108,21 +108,21 @@ const meItems = computed<PvItem[]>(() => [
 .tp__ib:hover, .tp__brand:hover, .tp__me:hover { background: var(--ws-top-hover); }
 .tp__ib:focus-visible, .tp__brand:focus-visible, .tp__me:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--ws-top-fg); }
 .tp__brand {
-  flex: none; display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 8px; margin-right: 16px; border: 0; border-radius: var(--ws-radius);
+  flex: none; display: flex; align-items: center; gap: var(--ws-gap-intra); height: 36px; padding: 0 var(--ws-gap-intra); margin-right: var(--ws-gap-block); border: 0; border-radius: var(--ws-radius);
   background: none; color: var(--ws-top-fg); font: inherit; text-decoration: none;
 }
 .tp__brand:hover { text-decoration: none; }
 /* 쉼표 그림은 32 격자 가운데 15폭이라 상자 오른쪽이 빈다 — 글자와 틈을 13 안팎으로 */
 .tp__mark { flex: none; display: block; margin-right: -4px; }
 .tp__name { font-size: 15px; font-weight: 700; white-space: nowrap; }
-.tp__r { margin-left: auto; display: flex; align-items: center; gap: 4px; }
-.tp__ctx { margin-right: 8px; }
+.tp__r { margin-left: auto; display: flex; align-items: center; gap: var(--ws-gap-adjacent); }
+.tp__ctx { margin-right: var(--ws-gap-intra); }
 .tp__dot {
   position: absolute; right: 2px; top: 2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
   background: var(--ws-count-bg); color: var(--ws-text-inverse); font-size: 10.5px; font-weight: 700; line-height: 18px; text-align: center;
 }
-.tp__me { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin-left: 4px; border: 0; border-radius: 50%; background: none; cursor: pointer; }
-.tp__av { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ws-side-avatar); color: #fff; font-size: 13px; font-weight: 700; }
+.tp__me { flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin-left: var(--ws-gap-adjacent); border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.tp__av { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--ws-side-avatar); color: var(--ws-text-inverse); font-size: var(--ws-font-size-md); font-weight: 700; }
 
 /* 전역 조건 칩 — 어두운 바 위라 테두리 · 글자를 바 색으로 */
 .tp__ctx :deep(.cx) { border-color: var(--ws-top-field); background: transparent; color: var(--ws-top-fg); }
