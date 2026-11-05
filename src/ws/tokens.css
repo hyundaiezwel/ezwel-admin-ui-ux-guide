@@ -96,13 +96,15 @@
   --ws-action-search-hover: #006b5c;
   --ws-action-sub: #757575;           /* 교정 — 원본 #aaaaaa 2.32:1 → 4.61:1 */
   --ws-action-sub-hover: #5e5e5e;
-  --ws-action-default-bg: #ffffff;
   --ws-action-default-fg: #444444;
   --ws-action-default-border: #cccccc; /* 버튼은 글자·배경이 식별을 맡아 장식선이다 */
+  /* 누를 수 없는 버튼(점검 F-47) — 흐리게(opacity)만 하면 글자가 2.49~3.27로 읽기 어려웠다. 면제 대상이지만 4.5를 지킨다 */
+  --ws-action-disabled-bg: #eeeeee;
+  --ws-action-disabled-fg: #666666;
+  --ws-action-disabled-border: #dddddd;
 
   /* 브랜드 원색 — **글자·흰 글자 배경으로 쓰지 않는다.** 로고·넓은 면 전용 */
   --ws-brand: #009782;           /* 원본 43회 */
-  --ws-brand-light: #99d5cd;
   --ws-brand-surface: #edfefb;
 
   /* 포커스 — 원본에 없다. 키보드 사용자를 위해 새로 둔다 */
@@ -111,6 +113,15 @@
   /* --- 크기 --------------------------------------------------------------- */
   --ws-control-h: 32px;     /* .w2input · .btn_cm */
   --ws-control-h-sm: 24px;  /* 달력 옆 짧은 버튼 · 뱃지 */
+  /* 버튼 높이는 이 둘뿐이다(점검 D4 · UI-35) — 보통 32 · 작게 24. 22(제목 옆 칩) · 28(하위 상태 칩) · 30(빠른 기간)은 쓰지 않는다 */
+  --ws-btn-h: var(--ws-control-h);
+  --ws-btn-h-sm: var(--ws-control-h-sm);
+  /* 항목 이름 칸 폭 하나 — 조회 영역 · 입력 표 · 간단 폼이 같이 쓴다(점검 D2 · UI-02 · UI-06) */
+  --ws-form-th-w: 160px;
+  /* 입력칸 폭 세 가지(점검 D2) — 짧게(코드 · 구분 선택) · 보통 · 길게(날짜 범위 · 긴 글자) */
+  --ws-field-w-s: 120px;
+  --ws-field-w-m: 200px;
+  --ws-field-w-l: 320px;
   --ws-row-h: 36px;         /* cm/template 규격 */
   --ws-form-row-h: 44px;    /* .tb .w2tb_th/td */
   --ws-search-row-h: 40px;  /* .shbox .tb .w2tb_th/td */
@@ -122,16 +133,22 @@
   /* --- 모서리 — 원본 빈도순 ---------------------------------------------- */
   --ws-radius-sm: 3px;   /* 14회 */
   --ws-radius-xs: 4px;   /* 16회 — 뱃지 */
-  --ws-radius: 6px;      /* 27회 — 최빈. 입력·버튼·탭 */
+  --ws-radius: 6px;      /* 27회 — 최빈. 입력·버튼·탭. **버튼 모서리는 이것 하나**(점검 D4 — 윤곽 알약 .ws-line을 걷었다) */
   --ws-radius-lg: 8px;   /* 17회 */
-  --ws-radius-xl: 10px;  /* 18회 */
-  --ws-radius-pill: 16px;
+  --ws-radius-pill: 16px; /* 뱃지 · 건수 · 집계 기준 표시 전용. 버튼에 쓰지 않는다 */
+
+  /* --- 그림자(점검 F-34) — 숫자로 직접 적지 않는다. 카드는 아래 --ws-card-shadow ---------------- */
+  --ws-shadow-pop: 0 4px 16px rgb(0 0 0 / 0.16);    /* 떠 있는 상자 — 펼침 메뉴 · 검색 결과 · 미리보기 종이 */
+  --ws-shadow-dialog: 0 8px 24px rgb(0 0 0 / 0.24); /* 창 — 로그인 카드 · 레이어 팝업 */
 
   /* --- 간격 ---------------------------------------------------------------
    * 원본은 **인접 형제 선택자로만** 간격을 준다(`.tbbox + .gvwbox { margin-top:24px }`).
    * contents.css의 48개 규칙에서 값을 뽑으면 사다리가 이렇게 나온다.
    *   24px 27회 · 4px 6회 · 8px 6회 · 6px 4회 · 12px 3회
+   * **정식 간격은 4 · 6 · 8 · 12 · 16 · 24 여섯 가지뿐이다(점검 D5 · UI-35).** 10 → 8, 14 → 12, 18 → 16으로 맞췄다.
+   * 2px은 테두리 · 미세 정렬 전용(--ws-space-hair) — 블록 사이 간격으로 쓰지 않는다.
    * --------------------------------------------------------------------- */
+  --ws-space-hair: 2px;
   --ws-gap-adjacent: 4px;  /* 붙은 것 — 제목줄 버튼 사이 */
   --ws-gap-item: 6px;      /* 안내문 안 줄 사이 */
   --ws-gap-intra: 8px;     /* 폼 셀 안 제목 → 내용 */
@@ -145,28 +162,15 @@
    * 여기서는 px로 적는다 — 루트 크기에 기대면 다른 앱에 섞일 때 전부 틀어진다.
    * --------------------------------------------------------------------- */
   --ws-font: Inter, 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --ws-font-size: 14px;     /* 1.4rem — 본문·라벨·셀·버튼 전부 */
-  --ws-font-size-sm: 12px;  /* 설명 */
+  --ws-font-size: 14px;     /* 1.4rem — 본문·라벨·셀·버튼·경로(breadcrumb, 점검 D6) 전부 */
+  --ws-font-size-sm: 12px;  /* 설명. 글자 최소 크기다 — 이보다 작게 쓰지 않는다 */
   --ws-font-size-md: 13px;  /* 뱃지 */
-  --ws-font-size-lg: 16px;  /* 팝업 제목 · 구획 제목 */
+  --ws-font-size-lg: 16px;  /* 팝업 제목 · 구획 제목(점검 D6 — 15px였던 것을 16으로 맞췄다) */
   --ws-font-size-xl: 20px;  /* 화면 제목 */
+  --ws-font-kpi: 22px;      /* 요약 숫자 카드의 숫자(점검 D6) — 통계 KPI · 결과 합계(.ws-sum) */
   --ws-letter: -0.02em;     /* 원본 전역 자간 */
 
-  /* --- 셸 — websquare-bo-ui base.css 실측 --------------------------------
-   * 레일 70px(로고 칸 #000 · 메뉴 칸 #2a403d) + 슬라이드 패널 280px(흰색, 검색 칸 #000).
-   * 패널이 열리면 본문이 280px로 밀리고 최소 폭이 1210 → 1000으로 준다(.show_menu). */
-  --ws-shell-rail-w: 70px;
-  --ws-shell-rail-bg: #000000;
-  --ws-shell-rail-nav-bg: #2a403d;
-  --ws-shell-rail-on-bg: #1d2023;
-  --ws-shell-rail-fg: #9aa8a5;     /* 원본 그대로 — 레일엔 아이콘만 있어 비텍스트 3:1 기준, 4.49로 통과 */
-  --ws-shell-side-w: 280px;
-  --ws-shell-side-search-bg: #000000;
-  --ws-shell-side-input-bg: #2d3843;
-  --ws-shell-side-placeholder: #aaaaaa; /* 원본 그대로 — 5.14로 통과 */
-  --ws-shell-search-h: 52px;
-  --ws-shell-min-w: 1210px;
-  --ws-shell-min-w-open: 1000px;
+  /* 옛 메뉴 틀(--ws-shell-*, 레일 70 + 패널 280)은 결정 D6 A 셸로 바뀌며 쓰이지 않아 걷었다(점검 F-36). 값은 git 이력에 있다 */
 
   /* 카드(D3 C) — 대시보드·통계 위젯에만. 목록·폼은 평면이다 */
   --ws-card-radius: 12px;
@@ -184,7 +188,6 @@
   --ws-side-on-bg: #1d2023;
   --ws-side-hover: rgb(0 0 0 / 0.18);
   --ws-side-line: rgb(255 255 255 / 0.1);
-  --ws-side-search-bg: #2d3843;
   --ws-side-avatar: #3e5754;
   /* 스크롤바 — 트랙은 비우고(투명) 손잡이만 그린다. 손잡이는 바탕과 3:1(비텍스트) */
   --ws-scroll-thumb: #8a939b;
@@ -283,11 +286,17 @@
   --ws-action-search-hover: #006b5c;
   --ws-action-sub: #5c666e;
   --ws-action-sub-hover: #4d565d;
-  --ws-action-default-bg: #1b2024;
   --ws-action-default-fg: #d5dbe0;
   --ws-action-default-border: #4a545b;
+  --ws-action-disabled-bg: #2c3338;
+  --ws-action-disabled-fg: #98a2ab;
+  --ws-action-disabled-border: #3a4349;
 
   --ws-brand-surface: #133530;
+
+  /* 그림자 — 어두운 바탕에서는 더 짙어야 보인다 */
+  --ws-shadow-pop: 0 4px 16px rgb(0 0 0 / 0.5);
+  --ws-shadow-dialog: 0 8px 24px rgb(0 0 0 / 0.6);
   --ws-focus-ring: 0 0 0 2px #1b2024, 0 0 0 4px #4ccab4;
 
   --ws-crumb: #aab3bb;

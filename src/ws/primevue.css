@@ -35,9 +35,15 @@
 /* 여러 줄 입력은 줄 높이를 되돌린다 */
 .p-textarea { line-height: 1.5; }
 
-/* 원본 버튼 모양 — 윤곽 알약(CSV다운·행추가)은 글자를 가볍게 */
-.p-button.ws-line { border-radius: var(--ws-radius-pill); }
-.p-button.ws-line .p-button-label { font-weight: 400; }
+/* 버튼 모양은 한 가지(점검 D4) — 높이 32 · 작게 24(preset), 모서리 --ws-radius.
+   윤곽 알약(.ws-line — CSV다운 · 행추가)은 걷었다. 그리드 제목줄 보조도 일반 보조 버튼(secondary outlined)이다 */
+
+/* 누를 수 없는 버튼 — Aura 기본은 흐리게(opacity 0.6)만 해 글자가 2.49~3.27이었다. 전용 면 · 글자색으로 그린다.
+   aria-disabled(누르면 이유를 알리는 버튼)는 여기 해당하지 않는다 — 누를 수 있다 */
+.p-button:disabled, .p-button.p-disabled {
+  opacity: 1; background: var(--ws-action-disabled-bg); border-color: var(--ws-action-disabled-border); color: var(--ws-action-disabled-fg);
+}
+.p-button-text:disabled, .p-button-link:disabled { background: transparent; border-color: transparent; }
 
 /* 포커스 — 우리 링을 쓴다. 입력 칸(D8 F2)은 포커스를 받으면 음영 · 안쪽 그림자를 걷고 흰 칸이 된다 — "지금 여기"를 또렷하게 */
 .p-inputtext:focus, .p-textarea:focus, .p-select.p-focus, .p-multiselect.p-focus, .p-autocomplete-input-multiple:focus-within { background: var(--ws-surface); }

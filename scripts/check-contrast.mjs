@@ -47,7 +47,11 @@ const PAIRS = [
   ['--ws-text-inverse', '--ws-action-search-hover', TEXT],
   ['--ws-text-inverse', '--ws-action-sub', TEXT],
   ['--ws-text-inverse', '--ws-action-sub-hover', TEXT],
-  ['--ws-action-default-fg', '--ws-action-default-bg', TEXT],
+  ['--ws-action-default-fg', '--ws-surface', TEXT], // 흰 버튼(secondary outlined)은 면 위에 바로 놓인다
+  // 누를 수 없는 버튼(점검 F-47) — 면제 대상이지만 읽혀야 한다
+  ['--ws-action-disabled-fg', '--ws-action-disabled-bg', TEXT],
+  // 회색 뱃지 바탕 위 표시용 글자(점검 F-04). 흐린 글자(--ws-text-muted)를 올리면 4.33이었다
+  ['--ws-text-badge', '--ws-surface-badge', TEXT],
   // 캔버스 — 카드를 쓰는 화면(대시보드·통계)의 바탕 위
   ...['--ws-text', '--ws-text-sub', '--ws-text-muted'].map((fg) => [fg, '--ws-canvas', TEXT]),
   ['--ws-field-border-canvas', '--ws-canvas', UI],
@@ -57,13 +61,7 @@ const PAIRS = [
   ['--ws-text', '--ws-field-bg', TEXT],
   ['--ws-text-muted', '--ws-field-bg', TEXT],
   ['--ws-field-border-focus', '--ws-surface', UI],
-  // 셸 — 어두운 레일 위 흰 글자 · 흐린 아이콘
-  ['--ws-text-inverse', '--ws-shell-rail-bg', TEXT],
-  ['--ws-text-inverse', '--ws-shell-rail-nav-bg', TEXT],
-  ['--ws-text-inverse', '--ws-shell-rail-on-bg', TEXT],
-  ['--ws-shell-rail-fg', '--ws-shell-rail-nav-bg', UI], // 아이콘만 — 글자를 올리면 TEXT로 바꾼다
-  ['--ws-shell-side-placeholder', '--ws-shell-side-input-bg', TEXT],
-  ['--ws-text-inverse', '--ws-shell-side-input-bg', TEXT],
+  // 옛 셸(--ws-shell-*) 쌍은 토큰을 걷으며 뺐다(점검 F-36). 지금 셸은 아래 사이드바 · 상단바 쌍이 잰다
   // 건수 배지 — 위험색 바탕 흰 글자
   ['--ws-text-inverse', '--ws-count-bg', TEXT],
   ['--ws-text-inverse', '--ws-action-danger', TEXT],
@@ -83,7 +81,6 @@ const PAIRS = [
   ['--ws-side-sub', '--ws-side-bg', TEXT],
   ['--ws-side-muted', '--ws-side-bg', TEXT],
   ['--ws-text-inverse', '--ws-side-on-bg', TEXT],
-  ['--ws-shell-side-placeholder', '--ws-side-search-bg', TEXT],
   // 경로
   ['--ws-crumb', '--ws-surface', TEXT],
   ['--ws-crumb-last', '--ws-surface', TEXT],
