@@ -27,7 +27,7 @@ const detail = ref(false)
 // 격자는 이름과 입력칸을 따로 흘리므로 CSS만으로는 알 수 없다 — 폭이 바뀔 때마다 다시 잰다
 const form = ref<HTMLFormElement>()
 function wrapWide() {
-  const tb = form.value?.querySelector('.ws-sh__body tbody'); if (!tb) return
+  const tb = form.value?.querySelector('.ws-sh__body'); if (!tb) return
   tb.querySelectorAll('th.ws-sh__wrap').forEach((th) => th.classList.remove('ws-sh__wrap'))
   tb.querySelectorAll<HTMLElement>('td[colspan="3"], td[colspan="4"]').forEach((td) => {
     const th = td.previousElementSibling
@@ -62,7 +62,10 @@ useHotkey('F2', () => emit('search'))
       <table class="ws-tb">
         <tbody>
           <slot />
-          <slot v-if="detail" name="detail" />
+        </tbody>
+        <!-- 상세 조건은 접혀 있어도 그려 둔다(보이지만 않게) — 열 폭이 처음부터 펼친 상태 기준이라 펼쳐도 자리가 바뀌지 않는다 -->
+        <tbody v-if="$slots.detail" class="ws-sh__detail" :class="{ 'is-open': detail }">
+          <slot name="detail" />
         </tbody>
       </table>
     </div>
