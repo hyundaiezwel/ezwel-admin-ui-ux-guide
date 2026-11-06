@@ -28,7 +28,7 @@ const busy = ref(false)
 function submit() {
   error.value = ''
   if (!f.value.id || !f.value.pw) {
-    error.value = '아이디 · 비밀번호를 모두 입력하세요.'
+    error.value = '아이디 · 비밀번호를 모두 입력해 주세요.'
     return
   }
   busy.value = true
@@ -53,7 +53,7 @@ function submit() {
             <Password v-model="f.pw" input-id="lg-pw" :feedback="false" toggle-mask fluid size="large" placeholder="비밀번호 입력" :input-props="{ autocomplete: 'current-password' }" />
           </li>
           <li>
-            <p v-if="error" class="ws-err" role="alert" style="margin: 0 0 8px">{{ error }}</p>
+            <p v-if="error" class="ws-err" role="alert" style="margin: 0 0 var(--ws-gap-intra)">{{ error }}</p>
             <Button type="submit" :label="busy ? '로그인 중…' : '로그인'" size="large" fluid :loading="busy" class="lg__btn" />
           </li>
         </ul>
@@ -75,7 +75,7 @@ function submit() {
 .lg__card {
   margin-top: 40px; padding: 38px 136px 32px;
   border: 1px solid var(--ws-border-soft); border-radius: 15px; background: var(--ws-surface);
-  box-shadow: 0 5px 20px rgb(0 0 0 / 0.12);
+  box-shadow: var(--ws-shadow-dialog);
 }
 @media (max-width: 640px) { .lg__card { padding: 32px 24px; } .lg__box { translate: -50% -50%; } }
 .lg__tit { margin-bottom: 24px; font-size: 20px; line-height: 28px; font-weight: 700; text-align: center; }
@@ -83,7 +83,7 @@ function submit() {
 .lg__fields li:last-child { margin-top: -8px; } /* 원본 li:last-child{margin-top:12px} */
 :deep(.lg__btn.p-button) { border-radius: 8px; } /* 원본 로그인 버튼만 모서리 8 */
 .lg__msg { margin-top: 42px; color: var(--ws-login-fg); font-size: var(--ws-font-size-md); line-height: 18px; }
-.lg__msg li { position: relative; padding-left: 10px; }
+.lg__msg li { position: relative; padding-left: var(--ws-gap-intra); }
 .lg__msg li + li { margin-top: 4px; }
 .lg__msg li::before { content: ''; position: absolute; left: 0; top: 8px; width: 3px; height: 3px; border-radius: 50%; background: var(--ws-login-fg); }
 </style>

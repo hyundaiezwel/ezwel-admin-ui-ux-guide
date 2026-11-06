@@ -364,3 +364,20 @@ describe('표 모서리 끌기', () => {
     expect(dp(90, 400, 800, TABLE_MIN_PCT)).toBe(100)
   })
 })
+
+describe('글 칸 접근성(F-23 · F-24)', () => {
+  it('필수 · 바깥 오류 문구 연결, invalid 면 글 칸에 aria-invalid — 저장 때 첫 오류 칸 이동이 툴바가 아니라 글 칸으로', async () => {
+    const { w } = setup({ id: 'nt', required: true, describedby: 'nt-body-err' })
+    await flushPromises()
+    const doc = () => document.querySelector<HTMLElement>('.wse__doc')!
+    expect(doc().getAttribute('aria-required')).toBe('true')
+    expect(doc().getAttribute('aria-describedby')).toBe('nt-count nt-err nt-body-err')
+    expect(doc().hasAttribute('aria-invalid')).toBe(false)
+    await w.setProps({ invalid: true })
+    expect(doc().getAttribute('aria-invalid')).toBe('true')
+    expect(document.querySelector('.wse.is-invalid')).toBeNull() // 바깥 틀은 오류 칸으로 잡히지 않는다
+    await w.setProps({ invalid: false })
+    expect(doc().hasAttribute('aria-invalid')).toBe(false)
+    w.unmount()
+  })
+})

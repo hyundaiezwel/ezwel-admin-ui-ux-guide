@@ -59,11 +59,16 @@ const size = computed(() => SLOTS.find((s) => s.id === slot.value)!.size)
 function openNew() { editing.value = null; form.value = { title: '', link: '', range: [new Date(), null], show: true, file: null }; touched.value = false; open.value = true }
 function openEdit(b: Banner) { editing.value = b; form.value = { title: b.title, link: b.link, range: [parseDate(b.from), parseDate(b.to)], show: b.show, file: null }; touched.value = false; open.value = true }
 const errors = computed(() => ({
-  title: !form.value.title.trim() ? '제목을 입력하세요.' : '',
+  title: !form.value.title.trim() ? '제목을 입력해 주세요.' : '',
   link: form.value.link && !/^https?:\/\//.test(form.value.link) ? 'http:// 또는 https://로 시작해야 합니다.' : '',
-  range: !form.value.range[0] || !form.value.range[1] ? '전시 시작일과 종료일을 고르세요.' : form.value.range[0] > form.value.range[1] ? '시작일이 종료일보다 늦습니다.' : '',
-  file: !editing.value && !form.value.file ? (fileErr.value ?? '이미지를 첨부하세요.') : '',
+  range: !form.value.range[0] || !form.value.range[1] ? '전시 시작일과 종료일을 골라 주세요.' : form.value.range[0] > form.value.range[1] ? '시작일이 종료일보다 늦습니다.' : '',
+  file: !editing.value && !form.value.file ? (fileErr.value ?? '이미지를 첨부해 주세요.') : '',
 }))
+/** 표 머리 「?」 도움말(UI-32) */
+const HELP = {
+  phase: '진행상태는 전시기간과 오늘 날짜로 정해진다.',
+  show: '전시를 끄면 전시기간 안이어도 나가지 않는다.',
+}
 function save() {
   touched.value = true
   if (Object.values(errors.value).some(Boolean)) return
@@ -79,6 +84,7 @@ function save() {
 <template>
   <div class="ws-page">
     <PageHead />
+    <p class="ws-desc ws-pgt-note">등록할 때 규격이 다른 이미지를 올리면 제약 안내가 바로 뜬다.</p>
 
     <section class="ws-sec">
       <Tabs v-model:value="slot">
@@ -95,7 +101,7 @@ function save() {
       </div>
       <table class="ws-gtb">
         <thead>
-          <tr><th scope="col" style="width: 84px">순서</th><th scope="col" style="width: 150px">미리보기</th><th scope="col">제목</th><th scope="col" style="width: 210px">전시기간</th><th scope="col" style="width: 92px">진행상태</th><th scope="col" style="width: 84px">전시</th><th scope="col" style="width: 72px">수정</th></tr>
+          <tr><th scope="col" style="width: 84px">순서</th><th scope="col" style="width: 150px">미리보기</th><th scope="col">제목</th><th scope="col" style="width: 210px">전시기간</th><th scope="col" style="width: 112px">진행상태<span v-tooltip.top="HELP.phase" class="ws-help" tabindex="0" role="img" :aria-label="`진행상태 도움말: ${HELP.phase}`">?</span></th><th scope="col" style="width: 84px">전시<span v-tooltip.top="HELP.show" class="ws-help" tabindex="0" role="img" :aria-label="`전시 도움말: ${HELP.show}`">?</span></th><th scope="col" style="width: 72px">수정</th></tr>
         </thead>
         <tbody>
           <tr v-for="(b, i) in inSlot" :key="b.id">
@@ -119,14 +125,6 @@ function save() {
         </tbody>
       </table>
     </section>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>진행상태는 전시기간과 오늘 날짜로 정해진다. 전시를 끄면 기간 안이어도 나가지 않는다.</li>
-        <li>등록할 때 규격이 다른 이미지를 올려 보면 제약 안내가 바로 뜬다.</li>
-      </ul>
-    </div>
 
     <Drawer v-model:visible="open" position="right" :style="{ width: '560px' }" :header="editing ? `${slot} 배너 수정` : `${slot} 배너 등록`">
       <table class="ws-tb">

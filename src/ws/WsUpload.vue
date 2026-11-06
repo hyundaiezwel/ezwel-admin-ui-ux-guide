@@ -69,13 +69,14 @@ onBeforeUnmount(() => { if (url.value) URL.revokeObjectURL(url.value) })
 <template>
   <div class="up">
     <div class="up__row">
-      <input :id="id" ref="input" type="file" class="up__native" :accept="accept.map((a) => '.' + a).join(',')" :aria-describedby="`${id}-rule`" :aria-invalid="!!error" @change="pick" />
-      <Button type="button" label="파일 선택" severity="secondary" outlined @click="input?.click()" />
+      <input :id="id" ref="input" type="file" tabindex="-1" class="up__native" :accept="accept.map((a) => '.' + a).join(',')" :aria-describedby="`${id}-rule`" :aria-invalid="!!error" @change="pick" />
+      <!-- 숨은 파일 칸은 Tab 에서 빼고(F-26) 규칙 · 오류 연결은 키보드가 닿는 이 버튼에 건다 -->
+      <Button type="button" label="파일 선택" severity="secondary" outlined :aria-describedby="error ? `${id}-rule ${id}-err` : `${id}-rule`" @click="input?.click()" />
       <span class="up__name">{{ file ? file.name : '선택한 파일 없음' }}</span>
       <Button v-if="file" type="button" label="지우기" severity="secondary" text size="small" @click="clear" />
     </div>
     <p :id="`${id}-rule`" class="ws-desc">{{ rule }}</p>
-    <p v-if="error" class="ws-err" role="alert">{{ error }}</p>
+    <p v-if="error" :id="`${id}-err`" class="ws-err" role="alert">{{ error }}</p>
     <img v-if="file && url" :src="url" alt="첨부 미리보기" class="up__thumb" />
   </div>
 </template>

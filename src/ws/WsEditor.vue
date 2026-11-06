@@ -44,6 +44,10 @@ const props = withDefaults(defineProps<{
   id?: string
   /** 이미지를 받을 호스트(업로드 서버). 주면 그 밖의 https 이미지는 붙여넣어도 버린다. 상대 주소 · blob:은 늘 받는다 */
   imageHosts?: string[]
+  /** 글 칸 설명으로 더 이을 요소 id — 화면이 칸 아래에 따로 띄우는 오류 문구 등 */
+  describedby?: string
+  /** 필수 칸 — 글 칸에 aria-required */
+  required?: boolean
 }>(), { placeholder: '', maxImageMB: 10, editable: true, invalid: false, ariaLabel: '본문', id: 'ws-editor' })
 
 const emit = defineEmits<{ 'update:modelValue': [html: string]; invalid: [message: string | null] }>()
@@ -324,7 +328,8 @@ const editor = useEditor({
       role: 'textbox',
       'aria-multiline': 'true',
       'aria-label': props.ariaLabel,
-      'aria-describedby': `${props.id}-count ${props.id}-err`,
+      'aria-describedby': [`${props.id}-count`, `${props.id}-err`, props.describedby].filter(Boolean).join(' '),
+      ...(props.required ? { 'aria-required': 'true' } : {}),
       class: 'wse__doc',
     },
     // 형식 검사에 걸린 파일도 FileHandler가 거르면 알릴 길이 없다 — 넣을 수 없는 파일은 여기서 먼저 알린다
@@ -411,6 +416,17 @@ watch(() => props.modelValue, (v) => {
   if (v !== cur) { ed.commands.setContent(v || '', { emitUpdate: false }); checkLength() }
 })
 watch(() => props.editable, (v) => editor.value?.setEditable(v))
+/**
+ * 오류 표시는 글 칸(textbox)에 aria-invalid 로 — 화면낭독기가 「오류 있음」을 읽고, 저장 때 첫 오류 칸 이동(focusFirstInvalid)이
+ * 툴바 첫 버튼이 아니라 글 칸으로 간다(F-23). 테두리 색은 바깥 틀 클래스(wse--invalid)가 맡는다
+ */
+const showInvalid = computed(() => props.invalid || !!error.value || over.value)
+watch([showInvalid, editor], ([b, ed]) => {
+  const dom = ed?.view.dom
+  if (!dom) return
+  if (b) dom.setAttribute('aria-invalid', 'true')
+  else dom.removeAttribute('aria-invalid')
+}, { immediate: true })
 onBeforeUnmount(() => editor.value?.destroy())
 
 /* ---------- 툴바 ---------- */
@@ -512,7 +528,7 @@ defineExpose({ editor, insertFiles, setLink, setImageWidth, setTableWidth, after
 </script>
 
 <template>
-  <div class="wse" :class="{ 'is-readonly': !editable, 'is-invalid': invalid || !!error || over }">
+  <div class="wse" :class="{ 'is-readonly': !editable, 'wse--invalid': showInvalid }">
     <div v-if="editable" ref="toolbar" class="wse__tb" role="toolbar" :aria-label="`${ariaLabel} 서식`" @keydown="roam">
       <div class="wse__g">
         <Button data-tb text severity="secondary" aria-label="실행 취소" v-tooltip.bottom="'실행 취소 (Ctrl+Z)'" :disabled="!editor?.can().undo()" @click="run((c) => c.undo())"><AppIcon name="undo" :size="16" /></Button>
@@ -585,7 +601,7 @@ defineExpose({ editor, insertFiles, setLink, setImageWidth, setTableWidth, after
 <style scoped>
 .wse { display: grid; border: 1px solid var(--ws-field-border); border-radius: var(--ws-radius); background: var(--ws-field-bg); }
 .wse:focus-within { border-color: var(--ws-field-border-focus); box-shadow: 0 0 0 1px var(--ws-field-border-focus); }
-.wse.is-invalid { border-color: var(--ws-text-danger); }
+.wse.wse--invalid { border-color: var(--ws-text-danger); }
 .wse.is-readonly { border-color: var(--ws-border); background: var(--ws-surface); box-shadow: none; }
 
 .wse__tb { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; padding: 4px 6px; border-bottom: 1px solid var(--ws-border); background: var(--ws-surface-head); border-radius: var(--ws-radius) var(--ws-radius) 0 0; }
@@ -601,11 +617,11 @@ defineExpose({ editor, insertFiles, setLink, setImageWidth, setTableWidth, after
 .wse__sw { display: inline-block; width: 14px; height: 14px; margin-right: 8px; border-radius: 3px; vertical-align: -2px; border: 1px solid var(--ws-border); }
 .wse__file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
-.wse__bar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-bottom: 1px solid var(--ws-border); background: var(--ws-surface); }
+.wse__bar { display: flex; align-items: center; gap: var(--ws-gap-intra); padding: var(--ws-gap-item) var(--ws-gap-intra); border-bottom: 1px solid var(--ws-border); background: var(--ws-surface); }
 .wse__bar label { flex: none; font-size: var(--ws-font-size-sm); color: var(--ws-text-sub); }
 .wse__barin { flex: 1; min-width: 0; }
 
-.wse__body :deep(.wse__doc) { min-height: 280px; max-height: 640px; overflow-y: auto; padding: 14px 16px; color: var(--ws-text); line-height: 1.7; outline: none; word-break: keep-all; overflow-wrap: anywhere; }
+.wse__body :deep(.wse__doc) { min-height: 280px; max-height: 640px; overflow-y: auto; padding: var(--ws-gap-inter) var(--ws-gap-block); color: var(--ws-text); line-height: 1.7; outline: none; word-break: keep-all; overflow-wrap: anywhere; }
 /* 포커스는 바깥 틀(.wse:focus-within)이 보인다 — 전역 링이 편집 영역에 한 겹 더 그려지지 않게 */
 .wse__body :deep(.wse__doc:focus-visible) { outline: none; box-shadow: none; }
 .is-readonly .wse__body :deep(.wse__doc) { min-height: 0; max-height: none; }
@@ -640,9 +656,9 @@ defineExpose({ editor, insertFiles, setLink, setImageWidth, setTableWidth, after
 .wse__body :deep(th) { background: var(--ws-surface-head); font-weight: 700; }
 .wse__body :deep(.selectedCell) { background: var(--ws-surface-selected); }
 .wse__body :deep(p.is-editor-empty:first-child::before) { content: attr(data-placeholder); float: left; height: 0; color: var(--ws-text-muted); pointer-events: none; }
-.wse__body :deep(.wse__uploading) { display: inline-block; padding: 6px 10px; border: 1px dashed var(--ws-border-strong); border-radius: var(--ws-radius-sm); color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
+.wse__body :deep(.wse__uploading) { display: inline-block; padding: var(--ws-gap-item) var(--ws-gap-intra); border: 1px dashed var(--ws-border-strong); border-radius: var(--ws-radius-sm); color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
 
-.wse__ft { display: flex; align-items: flex-start; gap: 12px; padding: 4px 10px 6px; border-top: 1px solid var(--ws-border); }
+.wse__ft { display: flex; align-items: flex-start; gap: var(--ws-gap-inter); padding: var(--ws-gap-adjacent) var(--ws-gap-intra) var(--ws-gap-item); border-top: 1px solid var(--ws-border); }
 .wse__err { flex: 1; min-height: 1em; margin: 0; }
 .wse__count { flex: none; margin: 0; color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); font-variant-numeric: tabular-nums; }
 .wse__count.is-over { color: var(--ws-text-danger); font-weight: 700; }

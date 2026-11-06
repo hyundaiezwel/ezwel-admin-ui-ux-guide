@@ -54,7 +54,7 @@ function typed(e: KeyboardEvent) {
 
   <Dialog v-model:visible="open" modal :header="header" :style="{ width: '480px' }" :draggable="false">
     <InputText :id="`${id}-q`" v-model="q" fluid placeholder="이름 또는 번호" aria-label="검색어" />
-    <p class="ws-desc pk__cnt">{{ hits.total.toLocaleString('ko-KR') }}건<template v-if="hits.total > 50"> — 50건까지 보인다. 검색어를 더 넣으세요</template></p>
+    <p class="ws-desc pk__cnt">{{ hits.total.toLocaleString('ko-KR') }}건<template v-if="hits.total > 50"> — 50건까지 보인다. 검색어를 더 넣어 주세요</template></p>
     <ul class="pk__list" role="listbox" :aria-label="header">
       <li v-for="i in hits.list" :key="i.id" role="option" :aria-selected="at === i.id" tabindex="0" class="pk__i" @click="at = i.id" @dblclick="at = i.id; choose()" @keydown.enter="at = i.id; choose()">
         <span>{{ i.label }}</span><small v-if="i.sub">{{ i.sub }}</small>

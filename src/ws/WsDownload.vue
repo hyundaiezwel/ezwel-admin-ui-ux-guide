@@ -47,11 +47,11 @@ let sessionAuthed = false
 <template>
   <span class="dl">
     <span class="ws-desc">최대 {{ limit.toLocaleString('ko-KR') }}건</span>
-    <Button :label="label" severity="secondary" outlined class="ws-line" @click="start" />
+    <Button :label="label" severity="secondary" outlined @click="start" />
   </span>
 
   <Dialog v-model:visible="authOpen" modal header="다운로드 인증" :style="{ width: '400px' }" :draggable="false">
-    <p style="margin-bottom: 12px">개인정보가 담긴 파일이라 본인 확인이 필요합니다. 등록된 휴대폰으로 보낸 6자리를 입력하세요.</p>
+    <p style="margin-bottom: 12px">개인정보가 담긴 파일이라 본인 확인이 필요합니다. 등록된 휴대폰으로 보낸 6자리를 입력해 주세요.</p>
     <label for="dl-code" class="ws-req" style="display: block; margin-bottom: 6px">인증번호</label>
     <InputText id="dl-code" v-model="code" inputmode="numeric" maxlength="6" fluid placeholder="아무 6자리(미리보기)" />
     <template #footer>
@@ -71,5 +71,5 @@ let sessionAuthed = false
 </template>
 
 <style scoped>
-.dl { flex: none; display: inline-flex; align-items: center; gap: 8px; }
+.dl { flex: none; display: inline-flex; align-items: center; gap: var(--ws-gap-intra); }
 </style>

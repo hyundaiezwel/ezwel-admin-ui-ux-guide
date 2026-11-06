@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs'
 const pw = await import(process.env.PLAYWRIGHT_CORE || 'playwright-core').catch(() => null)
 if (!pw) { console.error('playwright-core 를 찾지 못했다 — PLAYWRIGHT_CORE 경로를 지정하라'); process.exit(2) }
 const URL = process.env.SB_URL || 'http://localhost:5320'
-const WIDTHS = (process.env.SB_WIDTHS || '1280,1024').split(',').map(Number)
+const WIDTHS = (process.env.SB_WIDTHS || '1280,1024,640').split(',').map(Number)
 // 라우터의 고정 경로(':' 인자와 로그인 · 와일드카드 제외)
 const codes = [...readFileSync('src/router.ts', 'utf8').matchAll(/path: '([^':*]+)'/g)].map((m) => m[1]).filter((p) => p && p !== '/' && !p.includes('login'))
 const FAIL = ['charWrap', 'titleWrap', 'hOverflow', 'outRight', 'btnWrap']

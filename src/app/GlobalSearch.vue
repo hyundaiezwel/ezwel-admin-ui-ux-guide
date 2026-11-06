@@ -93,7 +93,7 @@ const placeholder = '메뉴 · 기업 · 회원 · 접수번호 검색'
 <style scoped>
 .gs { position: relative; width: min(440px, 36vw); }
 .gs__box {
-  display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px 0 12px;
+  display: flex; align-items: center; gap: var(--ws-gap-intra); height: 34px; padding: 0 var(--ws-gap-intra) 0 var(--ws-gap-inter);
   border: 1px solid var(--ws-top-field); border-radius: 17px; background: var(--ws-top-q); color: var(--ws-top-muted);
 }
 .gs__box:focus-within { border-color: var(--ws-top-fg); }
@@ -102,26 +102,26 @@ const placeholder = '메뉴 · 기업 · 회원 · 접수번호 검색'
 .gs__box input:focus { outline: none; }
 .gs__box input:focus-visible { box-shadow: none; } /* 포커스는 바깥 상자 테두리(:focus-within)가 보여 준다 — 안쪽 링이 겹쳐 보였다 */
 .gs__box input::-webkit-search-cancel-button { display: none; }
-.gs__kbd { padding: 0 6px; border: 1px solid var(--ws-top-field); border-radius: 4px; font: inherit; font-size: 11px; line-height: 16px; }
+.gs__kbd { padding: 0 var(--ws-gap-item); border: 1px solid var(--ws-top-field); border-radius: var(--ws-radius-xs); font: inherit; font-size: 11px; line-height: 16px; }
 .gs__pop {
-  position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 60; max-height: 420px; overflow: auto; padding: 6px 0;
+  position: absolute; left: 0; right: 0; top: calc(100% + var(--ws-gap-item)); z-index: 60; max-height: 420px; overflow: auto; padding: var(--ws-gap-item) 0;
   border: 1px solid var(--ws-border); border-radius: var(--ws-radius-lg); background: var(--ws-surface); color: var(--ws-text);
-  box-shadow: 0 12px 32px rgb(0 0 0 / 0.22);
+  box-shadow: var(--ws-shadow-pop);
 }
-.gs__g { padding: 8px 14px 4px; color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
-.gs__i { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 8px 14px; cursor: pointer; }
+.gs__g { padding: var(--ws-gap-intra) var(--ws-gap-inter) var(--ws-gap-adjacent); color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
+.gs__i { display: flex; align-items: baseline; justify-content: space-between; gap: var(--ws-gap-inter); padding: var(--ws-gap-intra) var(--ws-gap-inter); cursor: pointer; }
 .gs__i[aria-selected='true'] { background: var(--ws-surface-selected); }
 .gs__l { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .gs__i small { flex: none; color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
-.gs__none { padding: 16px 14px; color: var(--ws-text-muted); text-align: center; }
-.gs__foot { margin-top: 4px; padding: 8px 14px 4px; border-top: 1px solid var(--ws-border-lighter); color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
+.gs__none { padding: var(--ws-gap-block) var(--ws-gap-inter); color: var(--ws-text-muted); text-align: center; }
+.gs__foot { margin-top: var(--ws-gap-adjacent); padding: var(--ws-gap-intra) var(--ws-gap-inter) var(--ws-gap-adjacent); border-top: 1px solid var(--ws-border-lighter); color: var(--ws-text-muted); font-size: var(--ws-font-size-sm); }
 /* 1152 미만 — 돋보기만 남긴다. 누르거나 / · ⌘K로 들어오면 그 자리에서 펼쳐진다(포커스가 있는 동안) */
 @media (max-width: 1151px) {
   .gs { width: 36px; height: 34px; flex: none; }
   .gs__box { width: 36px; padding: 0; justify-content: center; border-color: transparent; background: none; cursor: pointer; }
   .gs__box input, .gs__kbd { position: absolute; width: 1px; opacity: 0; pointer-events: none; }
   .gs:focus-within .gs__box {
-    position: absolute; left: 0; top: 0; z-index: 61; width: min(420px, 70vw); padding: 0 10px 0 12px;
+    position: absolute; left: 0; top: 0; z-index: 61; width: min(420px, 70vw); padding: 0 var(--ws-gap-intra) 0 var(--ws-gap-inter);
     justify-content: flex-start; border-color: var(--ws-top-fg); background: var(--ws-top-q);
   }
   .gs:focus-within .gs__box input { position: static; width: auto; opacity: 1; pointer-events: auto; }

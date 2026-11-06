@@ -125,7 +125,7 @@ const total = (f: (r: (typeof table.value)[number]) => number) => table.value.re
         <div class="ws-tit__r">
           <SelectButton v-model="range" :options="RANGES" :allow-empty="false" aria-label="조회 기간" />
           <span class="ws-sep" aria-hidden="true" />
-          <Button label="엑셀 내려받기" severity="secondary" outlined class="ws-line" />
+          <Button label="엑셀 내려받기" severity="secondary" outlined />
         </div>
       </div>
       <QueryState :loading="loading" :error="error" :lines="8" @retry="reload">

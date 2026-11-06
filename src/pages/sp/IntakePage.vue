@@ -60,7 +60,7 @@ onMounted(reload)
 watch(ctxKey, () => { grid.value?.clearSelection(); requery() })
 
 function search() {
-  if (periodError(f.value.range, { maxYears: 4 })) return notify('조회 기간을 확인하세요 — 최대 4년까지 조회할 수 있습니다.', 'danger')
+  if (periodError(f.value.range, { maxYears: 4 })) return notify('조회 기간을 확인해 주세요 — 최대 4년까지 조회할 수 있습니다.', 'danger')
   applied.value = { ...f.value }
   grid.value?.clearSelection()
   requery()
@@ -153,8 +153,13 @@ const BASIC_COLS = ['입금대기', '입금완료', '참여개시', '참여취�
 <template>
   <div class="ws-page">
     <PageHead />
+    <ul class="ws-notes ws-desc ws-pgt-note">
+      <li>사업과 참여년도는 오른쪽 위 <b>전역 조건</b>에서 바꾼다. 바꾸면 열린 화면 전부에 적용된다.</li>
+      <li>상태 <b>변경</b>은 확인 팝업을 거친다. AS-IS는 이 화면만 누르는 즉시 바뀌었다.</li>
+      <li>쪽을 넘기면 선택이 풀린다. 보이지 않는 행이 일괄 처리에 섞이지 않게 한다.</li>
+    </ul>
 
-    <WsSearch :cols="['104px', '', '160px', '']" @search="search" @reset="reset">
+    <WsSearch @search="search" @reset="reset">
       <tr>
         <th scope="row"><label for="i-from">접수일</label></th>
         <td colspan="3"><WsPeriod id="i-from" v-model="f.range" :limit="{ maxYears: 4 }" /></td>
@@ -170,38 +175,37 @@ const BASIC_COLS = ['입금대기', '입금완료', '참여개시', '참여취�
       </tr>
       <tr>
         <th scope="row"><label for="i-kw">검색어</label></th>
-        <td>
-          <div class="kw">
-            <Select v-model="f.kwType" :options="KW" aria-label="검색어 구분" class="kw__t" />
-            <InputText id="i-kw" v-model="f.kw" fluid :placeholder="`${f.kwType} 입력`" />
+        <td colspan="3">
+          <div class="ws-kw">
+            <Select v-model="f.kwType" :options="KW" aria-label="검색어 구분" class="ws-kw__type" />
+            <InputText id="i-kw" v-model="f.kw" fluid :placeholder="`${f.kwType} 입력`" aria-describedby="i-kw-desc" />
+          </div>
+          <span id="i-kw-desc" class="ws-desc">검색어에 <b>오류</b>를 넣으면 실패 화면을 확인할 수 있다(상태 확인용).</span>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">기업구분</th>
+        <td colspan="3">
+          <div class="ws-choices" role="radiogroup" aria-label="기업구분">
+            <div class="ws-radio"><RadioButton v-model="f.coFg" input-id="i-c-all" name="i-c" value="" /><label for="i-c-all">전체</label></div>
+            <div v-for="c in CO_FG" :key="c.code" class="ws-radio"><RadioButton v-model="f.coFg" :input-id="`i-c-${c.code}`" name="i-c" :value="c.code" /><label :for="`i-c-${c.code}`">{{ c.label }}</label></div>
           </div>
         </td>
+      </tr>
+      <tr>
         <th scope="row">발전모델</th>
         <td>
           <div class="ws-choices" role="radiogroup" aria-label="발전모델 대상">
             <div v-for="[v, l] in [['', '전체'], ['Y', '대상'], ['N', '비대상']]" :key="v" class="ws-radio"><RadioButton v-model="f.growth" :input-id="`i-g-${v}`" name="i-g" :value="v" /><label :for="`i-g-${v}`">{{ l }}</label></div>
           </div>
         </td>
+        <th scope="row">장애인 채용</th>
+        <td>
+          <div class="ws-choices" role="radiogroup" aria-label="장애인 근로자 채용 여부">
+            <div v-for="[v, l] in [['', '전체'], ['Y', '예'], ['N', '아니요']]" :key="v" class="ws-radio"><RadioButton v-model="f.disabled" :input-id="`i-d-${v}`" name="i-d" :value="v" /><label :for="`i-d-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
       </tr>
-      <template #detail>
-        <tr>
-          <th scope="row">기업구분</th>
-          <td colspan="3">
-            <div class="ws-choices" role="radiogroup" aria-label="기업구분">
-              <div class="ws-radio"><RadioButton v-model="f.coFg" input-id="i-c-all" name="i-c" value="" /><label for="i-c-all">전체</label></div>
-              <div v-for="c in CO_FG" :key="c.code" class="ws-radio"><RadioButton v-model="f.coFg" :input-id="`i-c-${c.code}`" name="i-c" :value="c.code" /><label :for="`i-c-${c.code}`">{{ c.label }}</label></div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">장애인 채용</th>
-          <td colspan="3">
-            <div class="ws-choices" role="radiogroup" aria-label="장애인 근로자 채용 여부">
-              <div v-for="[v, l] in [['', '전체'], ['Y', '예'], ['N', '아니요']]" :key="v" class="ws-radio"><RadioButton v-model="f.disabled" :input-id="`i-d-${v}`" name="i-d" :value="v" /><label :for="`i-d-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-        </tr>
-      </template>
     </WsSearch>
 
     <section class="ws-sec">
@@ -215,7 +219,7 @@ const BASIC_COLS = ['입금대기', '입금완료', '참여개시', '참여취�
       </div>
       <div class="ws-xscroll">
         <table class="ws-gtb">
-          <caption class="ws-desc" style="caption-side: bottom; text-align: left; padding-top: 6px">
+          <caption class="ws-desc" style="caption-side: bottom; text-align: left; padding-top: var(--ws-gap-item)">
             파란 막대가 붙은 행이 지금 전역 조건의 사업이다. 기초정보 묶음은 다음 화면(기초정보 심사)의 단계라 여기서는 숫자만 보인다.
           </caption>
           <thead>
@@ -273,16 +277,6 @@ const BASIC_COLS = ['입금대기', '입금완료', '참여개시', '참여취�
       <WsPager v-model:first="first" v-model:rows="size" :total="total" />
     </section>
 
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>사업 · 참여년도는 오른쪽 위 <b>전역 조건</b>에서 바꾼다 — 열린 화면 전부에 적용된다.</li>
-        <li>상태 <b>변경</b>은 확인 팝업을 거친다. AS-IS는 이 화면만 누르는 즉시 바뀌었다.</li>
-        <li>쪽을 넘기면 선택이 풀린다 — 보이지 않는 행이 일괄 처리에 섞이지 않게 한다.</li>
-        <li>상태 확인 — 검색어에 <b>오류</b>를 넣으면 실패 화면이 나온다.</li>
-      </ul>
-    </div>
-
     <WsActionDialog
       v-model:visible="changeOpen" header="자격심사 상태 변경"
       :target="current ? `${current.name} (${current.joinSeq}) — 지금 ${labelOf(current.sts)}` : ''"
@@ -309,8 +303,6 @@ const BASIC_COLS = ['입금대기', '입금완료', '참여개시', '참여취�
 </template>
 
 <style scoped>
-.kw { display: flex; gap: 6px; }
-.kw__t { width: 120px; flex: none; }
 .lnk { color: var(--ws-text-link); font-size: var(--ws-font-size-md); }
 .ws-gtb thead th { white-space: nowrap; font-size: var(--ws-font-size-md); line-height: 18px; padding: 6px 8px; }
 </style>

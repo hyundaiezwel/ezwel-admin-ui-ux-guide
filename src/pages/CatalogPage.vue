@@ -177,7 +177,7 @@ const tax = ref('과세')
                       <Button label="저장(F2)" severity="contrast" />
                       <Button label="조회(F2)" />
                       <Button label="보조" severity="secondary" />
-                      <Button label="CSV다운" severity="secondary" outlined class="ws-line" />
+                      <Button label="CSV다운" severity="secondary" outlined />
                       <Button label="삭제" severity="danger" outlined />
                       <Button label="작게" size="small" severity="secondary" outlined />
                       <Button label="비활성" disabled />
@@ -289,7 +289,7 @@ const tax = ref('과세')
               <Button label="옆 패널 열기" severity="secondary" outlined @click="side = true" />
               <Button label="알림 띄우기" severity="secondary" outlined @click="notify('저장했습니다', 'success')" />
             </div>
-            <p class="ws-desc" style="margin-top: 8px">확인이 필요 없는 결과는 알림으로 흘려보내고, 판단이 필요한 것만 팝업으로 세운다 — 원본 com.alert는 전부 모달이었다.</p>
+            <p class="ws-desc" style="margin-top: var(--ws-gap-intra)">확인이 필요 없는 결과는 알림으로 흘려보내고, 판단이 필요한 것만 팝업으로 세운다 — 원본 com.alert는 전부 모달이었다.</p>
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -309,7 +309,7 @@ const tax = ref('과세')
     <section class="ws-sec">
       <div class="ws-tit"><div class="ws-tit__l"><h2 class="ws-tit__h">에디터 — WsEditor (Tiptap 3)</h2></div></div>
       <div class="eds">
-        <div><p class="ws-desc">기본</p><WsEditor id="cat-ed1" v-model="ed1" :upload-image="catalogUpload" placeholder="내용을 입력하세요" aria-label="기본 에디터" /></div>
+        <div><p class="ws-desc">기본</p><WsEditor id="cat-ed1" v-model="ed1" :upload-image="catalogUpload" placeholder="내용을 입력해 주세요" aria-label="기본 에디터" /></div>
         <div><p class="ws-desc">글자 수 상한(20자)</p><WsEditor id="cat-ed2" v-model="ed2" :upload-image="catalogUpload" :max-length="20" aria-label="글자 수 상한 에디터" /></div>
         <div><p class="ws-desc">오류</p><WsEditor id="cat-ed3" v-model="ed3" :upload-image="catalogUpload" invalid aria-label="오류 에디터" /><span class="ws-err">본문을 입력해 주세요.</span></div>
         <div><p class="ws-desc">읽기 전용(미리보기)</p><WsEditor id="cat-ed4" :model-value="edSample" :upload-image="catalogUpload" :editable="false" aria-label="읽기 전용 에디터" /></div>

@@ -128,8 +128,12 @@ function finish(header: string, to: string | null, p: ActionPayload, allow: stri
 <template>
   <div class="ws-page">
     <PageHead />
+    <ul class="ws-notes ws-desc ws-pgt-note">
+      <li>기업명을 누르면 상세가 <b>새 탭</b>으로 열린다. 상세는 주소가 있어 새로고침하거나 공유할 수 있다(AS-IS는 폼 전송으로만 열렸다).</li>
+      <li>메모 칸은 목록에서 바로 고칠 수 있다(100자).</li>
+    </ul>
 
-    <WsSearch :cols="['104px', '', '160px', '']" @search="search" @reset="reset">
+    <WsSearch @search="search" @reset="reset">
       <tr>
         <th scope="row"><label for="b-from">참여신청일</label></th>
         <td colspan="3"><WsPeriod id="b-from" v-model="f.range" /></td>
@@ -145,7 +149,7 @@ function finish(header: string, to: string | null, p: ActionPayload, allow: stri
       </tr>
       <tr>
         <th scope="row"><label for="b-kw">검색어</label></th>
-        <td>
+        <td colspan="3">
           <div class="ws-kw">
             <Select v-model="f.kwType" :options="['기업명', '사업자번호', '접수번호']" aria-label="검색어 구분" class="ws-kw__type" />
             <InputText id="b-kw" v-model="f.kw" fluid :placeholder="`${f.kwType} 입력`" />
@@ -162,6 +166,7 @@ function finish(header: string, to: string | null, p: ActionPayload, allow: stri
           <h2 class="ws-tit__h">기업 목록</h2>
           <span class="ws-total">총<strong>{{ total.toLocaleString('ko-KR') }}</strong>건</span>
           <span class="ws-desc">선택 {{ selected }}건 · {{ ctx.year }}년 {{ bizLabel(ctx.biz) }}</span>
+          <span class="ws-desc">참여근로자수와 참여신청일은 2단 머리글로 나눠 칸마다 정렬한다(AS-IS는 한 칸에 줄바꿈).</span>
         </div>
         <div class="ws-tit__r">
           <WsDownload :total="total" :limit="20000" />
@@ -176,15 +181,6 @@ function finish(header: string, to: string | null, p: ActionPayload, allow: stri
       </QueryState>
       <WsPager v-model:first="first" v-model:rows="size" :total="total" />
     </section>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li><b>참여근로자수 · 참여신청일</b>은 AS-IS에서 한 칸에 줄바꿈으로 묶여 있던 값이다. 2단 머리글로 나눠 칸마다 정렬된다.</li>
-        <li>기업명을 누르면 상세가 <b>새 탭</b>으로 열린다. 상세는 주소가 있어 새로고침·공유가 된다 — AS-IS는 폼 전송으로만 열렸다.</li>
-        <li>메모 칸은 바로 고칠 수 있다(100자).</li>
-      </ul>
-    </div>
 
     <!-- 참여불가회원 경고 — AS-IS 문구와 버튼 셋(페이지 이동 · 다음단계 · 닫기)을 따른다 -->
     <Dialog v-model:visible="warnOpen" modal header="참여불가회원 알림" :style="{ width: '480px' }" :draggable="false">
@@ -212,7 +208,7 @@ function finish(header: string, to: string | null, p: ActionPayload, allow: stri
     />
     <WsActionDialog
       v-model:visible="breakOpen" header="확인서 파기" :target="`선택한 ${selected}개 기업`" danger
-      warn="파기 전에 입금 여부를 다시 확인하세요. 입금했는데 입금완료로 바뀌지 않은 상태에서 파기하면 환불을 시스템에서 진행할 수 없어 수기로 처리해야 합니다."
+      warn="파기 전에 입금 여부를 다시 확인해 주세요. 입금했는데 입금완료로 바뀌지 않은 상태에서 파기하면 환불을 시스템에서 진행할 수 없어 수기로 처리해야 합니다."
       :reason="{ label: '파기 사유', required: true, max: 200 }"
       notice="기업담당자에게 확인서 파기 LMS 및 E-Mail이 발송됩니다. 확인서 파기 철회로 되돌릴 수 있습니다."
       confirm-label="파기" @confirm="(p) => finish('확인서 파기 결과', '390', p, ['410', '510'])"
@@ -222,6 +218,6 @@ function finish(header: string, to: string | null, p: ActionPayload, allow: stri
 </template>
 
 <style scoped>
-.bn { display: grid; gap: 4px; margin: 12px 0; }
-.bn li { display: flex; justify-content: space-between; padding: 6px 10px; border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius-sm); }
+.bn { display: grid; gap: var(--ws-gap-adjacent); margin: var(--ws-gap-inter) 0; }
+.bn li { display: flex; justify-content: space-between; padding: var(--ws-gap-item) var(--ws-gap-intra); border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius-sm); }
 </style>

@@ -49,6 +49,8 @@ const sums = computed(() => {
   const list = all.value.filter((r) => (!applied.value.co || r.id === applied.value.co.id) && (!applied.value.coFg || r.coFg === applied.value.coFg))
   return Object.fromEntries(STAGES.map(([k]) => [k, list.reduce<Pair>((s, r) => [s[0] + r[k][0], s[1] + r[k][1]], [0, 0])])) as Record<string, Pair>
 })
+/** 재원 뜻 — 합계 표 머리 「?」 도움말(UI-32) */
+const FUND_HELP = '재원은 둘이다. 기업+개인(근로자 2, 기업 1)과 지원기관(1)이고, 입금 시점에 3 : 1이 강제된다.'
 const ratioOk = (p: Pair) => p[1] === 0 ? p[0] === 0 : Math.abs(p[0] / p[1] - 3) < 0.01
 
 const cell = (k: string, i: 0 | 1) => (c: any) => money(c.getRow().getData()[k][i], unit.value)
@@ -75,10 +77,13 @@ const columns = computed(() => [
   <div class="ws-page">
     <PageHead />
 
-    <WsSearch :cols="['104px', '', '160px', '']" @search="search" @reset="reset">
+    <WsSearch @search="search" @reset="reset">
       <tr>
         <th scope="row"><label for="r-co">고객사</label></th>
-        <td><WsPickField id="r-co" v-model="f.co" :items="picks" header="고객사 찾기" placeholder="전체 — 찾기로 한 곳 선택" /></td>
+        <td>
+          <WsPickField id="r-co" v-model="f.co" :items="picks" header="고객사 찾기" placeholder="전체 — 찾기로 한 곳 선택" />
+          <span class="ws-desc">기업명을 바로 치면 찾기 팝업이 그 글자로 열린다.</span>
+        </td>
         <th scope="row"><label for="r-fg">기업구분</label></th>
         <td><Select v-model="f.coFg" input-id="r-fg" :options="[{ code: '', label: '전체' }, ...CO_FG]" option-label="label" option-value="code" placeholder="전체" fluid /></td>
       </tr>
@@ -99,7 +104,7 @@ const columns = computed(() => [
             <tr><th v-for="([, l], i) in STAGES" :key="l" scope="colgroup" colspan="3" :class="{ g: i > 0 }">{{ l }}</th></tr>
             <tr>
               <template v-for="([k], i) in STAGES" :key="k">
-                <th scope="col" :class="{ g: i > 0 }">기업+개인</th><th scope="col">지원기관</th><th scope="col">합계</th>
+                <th scope="col" :class="{ g: i > 0 }">기업+개인<span v-if="i === 0" v-tooltip.top="FUND_HELP" class="ws-help" tabindex="0" role="img" :aria-label="`재원 도움말: ${FUND_HELP}`">?</span></th><th scope="col">지원기관</th><th scope="col">합계</th>
               </template>
             </tr>
           </thead>
@@ -118,7 +123,7 @@ const columns = computed(() => [
 
     <section class="ws-sec">
       <div class="ws-tit">
-        <div class="ws-tit__l"><h2 class="ws-tit__h">기업별 잔여금</h2><span class="ws-total">총<strong>{{ total.toLocaleString('ko-KR') }}</strong>곳</span><span class="ws-desc">단위 {{ unit }}</span></div>
+        <div class="ws-tit__l"><h2 class="ws-tit__h">기업별 잔여금</h2><span class="ws-total">총<strong>{{ total.toLocaleString('ko-KR') }}</strong>곳</span><span class="ws-desc">단위: {{ unit }}</span><span class="ws-desc"><b>3:1</b> 열은 입금 비율이 어긋난 기업을 드러낸다.</span></div>
         <div class="ws-tit__r"><WsDownload :total="total" :limit="20000" /></div>
       </div>
       <QueryState :loading="loading" :error="error" :empty="rows.length === 0" :lines="10" @retry="reload">
@@ -126,13 +131,5 @@ const columns = computed(() => [
       </QueryState>
       <WsPager v-model:first="first" v-model:rows="size" :total="total" />
     </section>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>재원은 둘이다 — 기업+개인(근로자 2 + 기업 1)과 지원기관(1). 입금 시점에 3 : 1이 강제되고, <b>3:1</b> 열이 어긋난 기업을 드러낸다.</li>
-        <li>고객사 칸에 바로 기업명을 치면 찾기 팝업이 그 글자로 열린다.</li>
-      </ul>
-    </div>
   </div>
 </template>

@@ -38,7 +38,7 @@
   border-right: 1px solid var(--ws-border);
 }
 .ws-datagrid .tabulator-header .tabulator-col:last-child { border-right: 0; }
-.ws-datagrid .tabulator-header .tabulator-col .tabulator-col-content { padding: 0 8px; min-height: var(--ws-grid-head-h); display: flex; align-items: center; }
+.ws-datagrid .tabulator-header .tabulator-col .tabulator-col-content { padding: 0 var(--ws-gap-intra); min-height: var(--ws-grid-head-h); display: flex; align-items: center; }
 .ws-datagrid .tabulator-header .tabulator-col .tabulator-col-title { font-weight: 400; text-align: center; }
 /* 제목칸이 내용 폭으로 줄어들면 가운데 정렬이 먹지 않는다 — 머리 체크박스가 왼쪽 안쪽 여백(8px)에 붙어
    아래 행 체크박스와 10px 어긋났다. 제목칸이 남는 폭을 다 먹게 한다 */
@@ -50,10 +50,10 @@
 /* 헤더 필수 표시 — 원본 th.gridHeaderTDDefault.req nobr:after */
 .ws-datagrid .tabulator-col.req .tabulator-col-title::after { content: ' *'; color: var(--ws-text-danger); }
 
-/* 헤더 필터 입력 */
+/* 헤더 필터 입력 — 작은 컨트롤 높이(24, F-43 — 26px였다) */
 .ws-datagrid .tabulator-header-filter input,
 .ws-datagrid .tabulator-header-filter select {
-  height: 26px; padding: 0 6px;
+  height: var(--ws-control-h-sm); padding: 0 var(--ws-gap-item);
   border: 1px solid var(--ws-field-border); border-radius: var(--ws-radius-sm);
   background: var(--ws-field-bg); box-shadow: var(--ws-field-inset); font-size: var(--ws-font-size-sm);
 }
@@ -71,7 +71,7 @@
    글자가 같은 높이에 들어간다. 여백을 8로 두면 뱃지 칸만 41px로 부푼다(실측). */
 .ws-datagrid .tabulator-row .tabulator-cell {
   position: relative;
-  padding: 5px 8px;
+  padding: 5px var(--ws-gap-intra);
   /* 칸이 inline-block이라 기본 baseline 정렬이면 줄 아래 여백 2px이 행에 섞인다.
      Tabulator는 그 높이를 재서 **모든 칸에 인라인 height로 다시 박는다** — 35가 37이 됐다(실측).
      top으로 붙여 기준선 여백을 없앤다. 세로 가운데는 여백 5 + 줄 24 + 여백 5가 맡는다. */
@@ -83,7 +83,7 @@
 .ws-datagrid .tabulator-row:hover { background: var(--ws-surface-hover); }
 
 /* 편집 셀 — 원본 :not(.w2grid_default_readonly)의 안쪽 상자 */
-.ws-datagrid .tabulator-row .tabulator-cell.tabulator-editable { padding: 5px 10px; cursor: text; }
+.ws-datagrid .tabulator-row .tabulator-cell.tabulator-editable { padding: 5px var(--ws-gap-intra); cursor: text; }
 .ws-datagrid .tabulator-row .tabulator-cell.tabulator-editable::before {
   content: ''; position: absolute; inset: 3px;
   border: 1px solid var(--ws-field-border); border-radius: var(--ws-radius);
@@ -91,7 +91,7 @@
 }
 .ws-datagrid .tabulator-row .tabulator-cell.tabulator-editing::before { border-color: var(--ws-field-border-focus); box-shadow: 0 0 0 1px var(--ws-field-border-focus); }
 .ws-datagrid .tabulator-row .tabulator-cell.tabulator-editing input,
-.ws-datagrid .tabulator-row .tabulator-cell.tabulator-editing select { padding: 0 2px; border: 0; background: transparent; }
+.ws-datagrid .tabulator-row .tabulator-cell.tabulator-editing select { padding: 0 var(--ws-space-hair); border: 0; background: transparent; }
 
 /* 잠긴 행 — 편집 상자만 거둔다. **글자를 흐리게 하지 않는다** — 잠긴 건 대개 진행 중인
    건이라 오히려 제일 중요하다. 흐리게 하면 비활성으로 읽힌다(처음에 그랬다). */

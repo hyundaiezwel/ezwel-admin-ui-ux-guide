@@ -49,7 +49,7 @@ const { rows, loading, error, reload, first, size, total, search: requery } = us
 onMounted(reload)
 watch(ctxKey, () => requery())
 function search() {
-  if (!f.value.range[0] || !f.value.range[1]) return notify('조회 기간을 넣으세요 — 이용내역은 기간이 필수다', 'warning')
+  if (!f.value.range[0] || !f.value.range[1]) return notify('조회 기간을 넣어 주세요 — 이용내역은 기간이 필수다', 'warning')
   if (periodError(f.value.range, { maxMonths: 12 })) return notify('조회 기간은 최대 12개월입니다', 'danger')
   applied.value = { ...f.value }
   requery()
@@ -85,10 +85,13 @@ const columns = [
   <div class="ws-page">
     <PageHead />
 
-    <WsSearch :cols="['104px', '', '160px', '']" @search="search" @reset="reset">
+    <WsSearch @search="search" @reset="reset">
       <tr>
         <th scope="row" class="req"><label for="us-from">기간</label></th>
-        <td colspan="3"><WsPeriod id="us-from" v-model="f.range" v-model:basis="f.basis" :bases="['적용일자', '승인일자', '매입일자']" :limit="{ maxMonths: 12 }" /></td>
+        <td colspan="3">
+          <WsPeriod id="us-from" v-model="f.range" v-model:basis="f.basis" :bases="['적용일자', '승인일자', '매입일자']" :limit="{ maxMonths: 12 }" />
+          <span class="ws-desc">카드 결제는 승인일과 매입일이 다르다. 정산은 매입일, 포인트 차감은 적용일 기준이다.</span>
+        </td>
       </tr>
       <tr>
         <th scope="row"><label for="us-p">제휴사</label></th>
@@ -98,11 +101,12 @@ const columns = [
       </tr>
       <tr>
         <th scope="row"><label for="us-kw">검색어</label></th>
-        <td>
+        <td colspan="3">
           <div class="ws-kw">
             <Select v-model="f.kwType" :options="['이름', '사번']" aria-label="검색어 구분" class="ws-kw__type" />
-            <InputText id="us-kw" v-model="f.kw" fluid :placeholder="`${f.kwType} 입력`" />
+            <InputText id="us-kw" v-model="f.kw" fluid :placeholder="`${f.kwType} 입력`" aria-describedby="us-kw-desc" />
           </div>
+          <span id="us-kw-desc" class="ws-desc">AS-IS의 <b>주민번호 검색은 뺐다</b>. 이름이나 사번으로 찾는다(필요하면 기획 결정 후 되살린다).</span>
         </td>
         <th scope="row">성별</th>
         <td>
@@ -111,17 +115,27 @@ const columns = [
           </div>
         </td>
       </tr>
-      <template #detail>
-        <tr>
-          <th scope="row">연령</th>
-          <td colspan="3">
-            <div class="ws-choices" role="radiogroup" aria-label="연령">
-              <div v-for="[v, l] in [[0, '전체'], [20, '20대'], [30, '30대'], [40, '40대'], [50, '50대 이상']]" :key="v" class="ws-radio"><RadioButton v-model="f.age" :input-id="`us-a-${v}`" name="us-a" :value="v" /><label :for="`us-a-${v}`">{{ l }}</label></div>
-            </div>
-          </td>
-        </tr>
-      </template>
+      <tr>
+        <th scope="row">연령</th>
+        <td colspan="3">
+          <div class="ws-choices" role="radiogroup" aria-label="연령">
+            <div v-for="[v, l] in [[0, '전체'], [20, '20대'], [30, '30대'], [40, '40대'], [50, '50대 이상']]" :key="v" class="ws-radio"><RadioButton v-model="f.age" :input-id="`us-a-${v}`" name="us-a" :value="v" /><label :for="`us-a-${v}`">{{ l }}</label></div>
+          </div>
+        </td>
+      </tr>
     </WsSearch>
+
+    <section class="ws-sum" aria-label="조회 결과 합계">
+      <div class="ws-tit">
+        <div class="ws-tit__l"><h2 class="ws-tit__h">조회 결과 합계</h2><span class="ws-desc">단위: 원(건수 제외)</span></div>
+      </div>
+      <dl class="ws-sum__cards">
+        <div><dt>건수</dt><dd>{{ won(sum.n) }}</dd></div>
+        <div><dt>사용</dt><dd>{{ won(sum.use) }}</dd></div>
+        <div><dt>취소</dt><dd class="is-bad">{{ won(sum.cancel) }}</dd></div>
+        <div><dt>순사용</dt><dd>{{ won(sum.use + sum.cancel) }}</dd></div>
+      </dl>
+    </section>
 
     <section class="ws-sec">
       <div class="ws-tit">
@@ -132,34 +146,14 @@ const columns = [
         </div>
         <div class="ws-tit__r"><WsDownload :total="total" :limit="50000" /></div>
       </div>
-      <dl class="sm" aria-label="조회 결과 합계">
-        <div><dt>건수</dt><dd>{{ won(sum.n) }}</dd></div>
-        <div><dt>사용</dt><dd>{{ won(sum.use) }}<small>원</small></dd></div>
-        <div><dt>취소</dt><dd class="neg">{{ won(sum.cancel) }}<small>원</small></dd></div>
-        <div><dt>순사용</dt><dd>{{ won(sum.use + sum.cancel) }}<small>원</small></dd></div>
-      </dl>
       <QueryState :loading="loading" :error="error" :empty="rows.length === 0" :lines="10" @retry="reload">
         <TabGrid :columns="columns" :rows="rows" height="auto" />
       </QueryState>
       <WsPager v-model:first="first" v-model:rows="size" :total="total" />
     </section>
-
-    <div class="ws-msg">
-      <p class="ws-msg__tit">안내</p>
-      <ul>
-        <li>AS-IS의 <b>주민번호 검색은 뺐다</b> — 이름 · 사번으로 찾는다. 필요하면 기획 결정 후 되살린다.</li>
-        <li>카드 결제는 승인일과 매입일이 다르다. 정산은 매입일, 포인트 차감은 적용일 기준이다.</li>
-      </ul>
-    </div>
   </div>
 </template>
 
 <style scoped>
-.sm { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: var(--ws-gap-inter); }
-.sm div { padding: 10px 16px; border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius); }
-.sm dt { color: var(--ws-text-sub); font-size: var(--ws-font-size-md); }
-.sm dd { margin-top: 2px; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sm dd small { margin-left: 2px; font-size: var(--ws-font-size-md); font-weight: 400; }
-.neg { color: var(--ws-text-danger); }
 :deep(.neg) { color: var(--ws-text-danger); }
 </style>

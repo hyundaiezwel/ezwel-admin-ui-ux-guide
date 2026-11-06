@@ -45,11 +45,11 @@ body {
 }
 
 .ws-skip {
-  position: absolute; left: 8px; top: -40px; z-index: 1000;
-  padding: 8px 12px; background: var(--ws-action-primary); color: var(--ws-action-primary-fg);
+  position: absolute; left: var(--ws-gap-intra); top: -40px; z-index: 1000;
+  padding: var(--ws-gap-intra) var(--ws-gap-inter); background: var(--ws-action-primary); color: var(--ws-action-primary-fg);
   border-radius: var(--ws-radius);
 }
-.ws-skip:focus { top: 8px; }
+.ws-skip:focus { top: var(--ws-gap-intra); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }

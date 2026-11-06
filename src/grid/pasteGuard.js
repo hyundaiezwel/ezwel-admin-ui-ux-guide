@@ -100,7 +100,7 @@ export function createPasteGuard({ getTable, rules = {}, onReport = () => {} }) 
 
     const ranges = table.getRanges()
     if (!ranges.length) { report(false, '선택된 범위가 없습니다.'); return false }
-    if (ranges.length > 1) { report(false, '다중 범위 붙여넣기는 지원하지 않습니다. 하나의 범위만 선택하세요.'); return false }
+    if (ranges.length > 1) { report(false, '다중 범위 붙여넣기는 지원하지 않습니다. 하나의 범위만 선택해 주세요.'); return false }
 
     const grid = parseGrid(clipboard)
     if (!grid.length) { report(false, '붙여넣을 데이터가 없습니다.'); return false }

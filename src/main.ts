@@ -5,6 +5,7 @@ import Tooltip from 'primevue/tooltip'
 import App from './App.vue'
 import { router } from './router'
 import { WsPreset } from './ws/preset'
+import { ARIA_KO } from './app/localeKo'
 import './app/theme'
 import './ws/tokens.css'
 import './ws/base.css'
@@ -27,6 +28,8 @@ createApp(App)
       },
     },
     ripple: false,
+    // 화면낭독기 읽기 문구를 한국어로(쪽 이동 「First Page」 · 창 닫기 「Close」가 영어로 읽혔다)
+    locale: { aria: ARIA_KO },
   })
   .use(ToastService)
   .directive('tooltip', Tooltip)

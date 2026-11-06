@@ -123,7 +123,7 @@ const condLabel = computed(() => CONDS.find((c) => c.code === cond.value)?.label
           </tr>
         </tbody>
       </table>
-      <div class="ws-btnbox" style="margin-top: 16px"><div class="ws-btnbox__c"><Button label="대상 조회" @click="query" /></div></div>
+      <div class="ws-btnbox" style="margin-top: var(--ws-gap-block)"><div class="ws-btnbox__c"><Button label="대상 조회" @click="query" /></div></div>
     </section>
 
     <!-- 2 대상 확인 -->
@@ -133,7 +133,7 @@ const condLabel = computed(() => CONDS.find((c) => c.code === cond.value)?.label
         <section class="ws-sec">
           <div class="ws-tit">
             <div class="ws-tit__l"><h2 class="ws-tit__h">취소 대상</h2><span class="ws-total">총<strong>{{ fmt(pool.length) }}</strong>곳</span><span class="ws-desc">선택 {{ selected }}</span></div>
-            <div class="ws-tit__r"><Button label="선택 기업 예외 처리" severity="secondary" outlined class="ws-line" :disabled="!selected" @click="addExcept" /></div>
+            <div class="ws-tit__r"><Button label="선택 기업 예외 처리" severity="secondary" outlined :disabled="!selected" @click="addExcept" /></div>
           </div>
           <TabGrid ref="grid" :columns="columns" :rows="pool" height="420px" @selection-change="selected = $event" />
         </section>
@@ -167,11 +167,11 @@ const condLabel = computed(() => CONDS.find((c) => c.code === cond.value)?.label
         <p class="ws-callout ws-callout--danger"><b>되돌릴 수 없음</b> 취소한 기업은 참여취소 상태가 되고 복구 기능이 없다. 기업담당자 {{ expected }}명에게 참여취소 LMS 및 E-Mail이 발송된다.</p>
         <p v-if="!can('bulk-cancel')" class="ws-callout ws-callout--warn"><b>권한 없음</b> 실행은 {{ needRole('bulk-cancel') }}만 할 수 있다(가정). 오른쪽 위 전역 조건의 역할을 바꿔 볼 수 있다.</p>
         <div class="fin__type">
-          <label for="bc-typed">확인을 위해 취소할 건수 <b>{{ expected }}</b>을 입력하세요</label>
+          <label for="bc-typed">확인을 위해 취소할 건수 <b>{{ expected }}</b>을 입력해 주세요</label>
           <InputText id="bc-typed" v-model="typed" inputmode="numeric" :placeholder="expected" :invalid="!!typed && !typedOk" style="width: 200px" />
         </div>
       </div>
-      <div class="ws-btnbox" style="margin-top: 16px"><div class="ws-btnbox__c">
+      <div class="ws-btnbox" style="margin-top: var(--ws-gap-block)"><div class="ws-btnbox__c">
         <Button label="이전" severity="secondary" outlined @click="step = 1" />
         <Button :label="`${expected}곳 일괄 참여 취소`" severity="danger" :disabled="!typedOk || !can('bulk-cancel')" @click="run" />
       </div></div>
@@ -181,7 +181,7 @@ const condLabel = computed(() => CONDS.find((c) => c.code === cond.value)?.label
     <section v-if="step === 3" class="ws-sec">
       <div class="ws-tit"><div class="ws-tit__l"><h2 class="ws-tit__h">처리 결과</h2></div></div>
       <p class="ws-callout"><b>완료</b> {{ fmt(result.ok) }}곳을 취소했다. 통지 실패 {{ result.fails.length }}건. 감사 기록 <code>{{ auditId }}</code> — 실행자 · 시각 · 조건 · 예외 목록이 함께 남았다.</p>
-      <div class="ws-btnbox" style="margin-top: 16px"><div class="ws-btnbox__c">
+      <div class="ws-btnbox" style="margin-top: var(--ws-gap-block)"><div class="ws-btnbox__c">
         <Button label="결과 다시 보기" severity="secondary" outlined @click="result.open = true" />
         <Button label="새로 시작" @click="restart" />
       </div></div>
@@ -194,7 +194,7 @@ const condLabel = computed(() => CONDS.find((c) => c.code === cond.value)?.label
 <style scoped>
 .fin { display: grid; gap: var(--ws-gap-block); max-width: 720px; }
 .fin__sum { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.fin__sum div { padding: 12px 14px; border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius); }
+.fin__sum div { padding: var(--ws-gap-inter); border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius); }
 .fin__sum dt { color: var(--ws-text-sub); font-size: var(--ws-font-size-md); }
 .fin__sum dd { margin-top: 4px; font-weight: 700; }
 .fin__sum .is-key { border-color: var(--ws-text-danger); }

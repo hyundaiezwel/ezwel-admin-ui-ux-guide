@@ -54,7 +54,7 @@ const text1 = computed(() => [
   `<포인트 사용현황 (${md.value})>`, `- 최종금액 및 최종건수 : ${f(d.value.point.all[0])}원 (${f(d.value.point.all[1])}건)`,
 ].join('\n'))
 async function copy(t: string) {
-  try { await navigator.clipboard.writeText(t); notify('보고 문구를 복사했습니다', 'success') } catch { notify('복사하지 못했습니다 — 브라우저 권한을 확인하세요', 'danger') }
+  try { await navigator.clipboard.writeText(t); notify('보고 문구를 복사했습니다', 'success') } catch { notify('복사하지 못했습니다 — 브라우저 권한을 확인해 주세요', 'danger') }
 }
 const ymd = computed(() => fmtDate(at.value).replace(/\./g, ''))
 const files = computed(() => [
@@ -82,7 +82,7 @@ const files = computed(() => [
         <Button :label="busy ? '만드는 중…' : '리포트 생성'" severity="contrast" :loading="busy" @click="generate" />
         <span v-if="made" class="ws-desc" role="status">{{ made }}에 만들었다</span>
       </div>
-      <p class="ws-desc" style="margin-top: 8px">실시간 조회 화면(접수·자격심사 등)과 숫자가 다를 수 있다 — 기준 시각이 다르다.</p>
+      <p class="ws-desc" style="margin-top: var(--ws-gap-intra)">실시간 조회 화면(접수·자격심사 등)과 숫자가 다를 수 있다 — 기준 시각이 다르다.</p>
     </section>
 
     <div class="ws-split ws-split--12">
@@ -113,7 +113,7 @@ const files = computed(() => [
                 <div class="kp__i"><span>전체 신청</span><b>{{ f(d.total.apply) }}<small>명</small></b><em>{{ f(d.total.applyCo) }}개사</em></div>
                 <div class="kp__i"><span>전체 확정</span><b>{{ f(d.total.confirm) }}<small>명</small></b><em>{{ f(d.total.confirmCo) }}개사</em></div>
               </div>
-              <table class="ws-gtb" style="margin-top: 16px">
+              <table class="ws-gtb" style="margin-top: var(--ws-gap-block)">
                 <caption class="cap">포인트 사용현황 ({{ md }})</caption>
                 <thead><tr><th scope="col">구분</th><th scope="col">금액</th><th scope="col">건수</th></tr></thead>
                 <tbody>
@@ -142,7 +142,7 @@ const files = computed(() => [
             </TabPanel>
             <TabPanel value="t4">
               <pre class="rp">{{ text1 }}</pre>
-              <div style="margin-top: 8px; text-align: right"><Button label="보고 문구 복사" severity="secondary" outlined @click="copy(text1)" /></div>
+              <div style="margin-top: var(--ws-gap-intra); text-align: right"><Button label="보고 문구 복사" severity="secondary" outlined @click="copy(text1)" /></div>
             </TabPanel>
           </TabPanels>
         </Tabs>
@@ -152,14 +152,14 @@ const files = computed(() => [
 </template>
 
 <style scoped>
-.gen { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.gen { display: flex; align-items: center; gap: var(--ws-gap-intra); flex-wrap: wrap; }
 .fl { display: grid; gap: 8px; margin-bottom: 8px; }
 .fl li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--ws-border-lighter); }
 .fl__n { min-width: 0; overflow-wrap: anywhere; font-size: var(--ws-font-size-md); }
 .kp { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.kp__i { display: grid; gap: 4px; padding: 14px 16px; border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius); }
+.kp__i { display: grid; gap: 4px; padding: var(--ws-gap-inter) var(--ws-gap-block); border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius); }
 .kp__i span { color: var(--ws-text-sub); font-size: var(--ws-font-size-md); }
-.kp__i b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.kp__i b { font-size: var(--ws-font-kpi); font-variant-numeric: tabular-nums; }
 .kp__i b small { margin-left: 2px; font-size: var(--ws-font-size-md); font-weight: 400; }
 .kp__i em { color: var(--ws-text-muted); font-style: normal; font-size: var(--ws-font-size-md); }
 .cap { caption-side: top; padding-bottom: 6px; text-align: left; font-weight: 600; }

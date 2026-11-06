@@ -62,7 +62,7 @@ function restart() { step.value = 0; file.value = null; check.value = null }
       <section class="ws-sec">
         <div class="ws-tit">
           <div class="ws-tit__l"><h2 class="ws-tit__h">양식과 등록 조건</h2><span class="ws-desc">{{ ctx.year }}년 {{ bizLabel(ctx.biz) }}</span></div>
-          <div class="ws-tit__r"><Button label="업로드 양식 받기" severity="secondary" outlined class="ws-line" @click="notify('양식을 내려받았습니다(미리보기)')" /></div>
+          <div class="ws-tit__r"><Button label="업로드 양식 받기" severity="secondary" outlined @click="notify('양식을 내려받았습니다(미리보기)')" /></div>
         </div>
         <table class="ws-tb">
           <colgroup><col style="width: 140px" /><col /><col style="width: 140px" /><col /></colgroup>
@@ -94,7 +94,7 @@ function restart() { step.value = 0; file.value = null; check.value = null }
           <colgroup><col style="width: 140px" /><col /></colgroup>
           <tbody><tr><th scope="row" class="req"><label for="up-f">엑셀 파일</label></th><td><WsUpload id="up-f" v-model="file" :accept="['xlsx', 'xls']" :max-kb="5120" /></td></tr></tbody>
         </table>
-        <p class="ws-callout" style="margin-top: 12px"><b>검증만 한다</b> 올리면 먼저 행마다 검사해 오류를 보여 준다. 등록은 다음 단계에서 고른다.</p>
+        <p class="ws-callout" style="margin-top: var(--ws-gap-inter)"><b>검증만 한다</b> 올리면 먼저 행마다 검사해 오류를 보여 준다. 등록은 다음 단계에서 고른다.</p>
       </section>
       <div class="ws-btnbox"><div class="ws-btnbox__c">
         <Button label="이전" severity="secondary" outlined @click="step = 0" />
@@ -103,18 +103,19 @@ function restart() { step.value = 0; file.value = null; check.value = null }
     </template>
 
     <template v-if="step === 2 && check">
-      <section class="ws-sec">
-        <dl class="sm">
+      <section class="ws-sum" aria-label="검증 결과 합계">
+        <div class="ws-tit"><div class="ws-tit__l"><h2 class="ws-tit__h">검증 결과</h2></div></div>
+        <dl class="ws-sum__cards">
           <div><dt>전체 행</dt><dd>{{ check.total }}</dd></div>
-          <div class="is-ok"><dt>정상</dt><dd>{{ ok }}</dd></div>
-          <div class="is-bad"><dt>오류 행</dt><dd>{{ check.badRows }}</dd></div>
+          <div><dt>정상</dt><dd class="is-ok">{{ ok }}</dd></div>
+          <div><dt>오류 행</dt><dd class="is-bad">{{ check.badRows }}</dd></div>
           <div><dt>오류 칸</dt><dd>{{ check.issues.length }}</dd></div>
         </dl>
       </section>
       <section class="ws-sec">
         <div class="ws-tit">
           <div class="ws-tit__l"><h2 class="ws-tit__h">행별 오류</h2><span class="ws-desc">{{ file?.name }}</span></div>
-          <div class="ws-tit__r"><Button label="오류 표시 파일 받기" severity="secondary" outlined class="ws-line" @click="notify('오류 칸에 표시한 파일을 내려받았습니다(미리보기)')" /></div>
+          <div class="ws-tit__r"><Button label="오류 표시 파일 받기" severity="secondary" outlined @click="notify('오류 칸에 표시한 파일을 내려받았습니다(미리보기)')" /></div>
         </div>
         <table class="ws-gtb">
           <thead><tr><th scope="col" style="width: 72px">행</th><th scope="col" style="width: 140px">칸</th><th scope="col" style="width: 180px">넣은 값</th><th scope="col">오류</th></tr></thead>
@@ -143,12 +144,5 @@ function restart() { step.value = 0; file.value = null; check.value = null }
 </template>
 
 <style scoped>
-.sm { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.sm div { padding: 12px 16px; border: 1px solid var(--ws-border-lighter); border-radius: var(--ws-radius); }
-.sm dt { color: var(--ws-text-sub); font-size: var(--ws-font-size-md); }
-.sm dd { margin-top: 2px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sm .is-ok dd { color: var(--ws-text-success); }
-.sm .is-bad { border-color: var(--ws-text-danger); }
-.sm .is-bad dd { color: var(--ws-text-danger); }
 .err { color: var(--ws-text-danger); }
 </style>

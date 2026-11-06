@@ -6,19 +6,19 @@
  * 화면마다 어느 쪽을 쓸지 고르게 되고, 높이 32를 두 군데서 지켜야 한다.
  * ========================================================================== */
 
-.ws-err { display: block; margin-top: 4px; color: var(--ws-text-danger); font-size: var(--ws-font-size-sm); }
-.ws-range { display: inline-flex; align-items: center; gap: 6px; }
+.ws-err { display: block; margin-top: var(--ws-gap-adjacent); color: var(--ws-text-danger); font-size: var(--ws-font-size-sm); }
+.ws-range { display: inline-flex; align-items: center; gap: var(--ws-gap-item); }
 
 /* --- 체크 · 라디오 배치  (원본 .w2checkbox_item · .w2radio_item) ----------
    상자는 PrimeVue Checkbox · RadioButton이다. 여기선 상자와 라벨의 간격만 준다 */
-.ws-check, .ws-radio { display: inline-flex; align-items: center; gap: 6px; }
+.ws-check, .ws-radio { display: inline-flex; align-items: center; gap: var(--ws-gap-item); }
 .ws-check label, .ws-radio label { cursor: pointer; }
-.ws-choices { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.ws-choices { display: flex; flex-wrap: wrap; gap: var(--ws-gap-intra) var(--ws-gap-block); }
 .ws-choices--v { flex-direction: column; }
 
 /* --- 뱃지  (원본 .badge) --------------------------------------------------- */
 .ws-badge {
-  display: inline-flex; align-items: center; height: var(--ws-control-h-sm); padding: 0 8px;
+  display: inline-flex; align-items: center; height: var(--ws-control-h-sm); padding: 0 var(--ws-gap-intra);
   border-radius: var(--ws-radius-xs); background: var(--ws-surface-badge); color: var(--ws-text-badge);
   font-size: var(--ws-font-size-md); font-weight: 500; white-space: nowrap;
 }
@@ -31,12 +31,12 @@
 .ws-badge--mute { background: var(--ws-surface-alt); color: var(--ws-text-muted); }
 
 /* --- 빈 상태 --------------------------------------------------------------- */
-.ws-empty { display: grid; place-items: center; gap: 6px; padding: 48px 16px; color: var(--ws-text-muted); text-align: center; }
+.ws-empty { display: grid; place-items: center; gap: var(--ws-gap-item); padding: 48px var(--ws-gap-block); color: var(--ws-text-muted); text-align: center; }
 
 /* --- 그리드 칸 안 버튼 --------------------------------------------------
-   Tabulator 포매터는 HTML 문자열을 낸다 — 컴포넌트를 못 쓴다. 행 높이 35에 맞춰 24 */
+   Tabulator 포매터는 HTML 문자열을 낸다 — 컴포넌트를 못 쓴다. 행 높이 35에 맞춰 작은 버튼(24) · 버튼 모서리 하나(점검 D4) */
 .ws-cellbtn {
-  height: 24px; padding: 0 8px; border: 1px solid var(--ws-field-border); border-radius: var(--ws-radius-xs);
+  height: var(--ws-btn-h-sm); padding: 0 var(--ws-gap-intra); border: 1px solid var(--ws-field-border); border-radius: var(--ws-radius);
   background: var(--ws-surface); color: var(--ws-text-sub); font: inherit; font-size: var(--ws-font-size-sm); cursor: pointer;
 }
 .ws-cellbtn:hover { color: var(--ws-text); border-color: var(--ws-text-muted); }

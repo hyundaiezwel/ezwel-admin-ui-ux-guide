@@ -15,7 +15,8 @@ const rows = defineModel<number>('rows', { required: true })
 </script>
 
 <template>
-  <div class="pg">
+  <!-- 0건이면 그리지 않는다(UI-33) — 넘길 쪽이 없는데 「1」만 있는 쪽 이동이 보였다 -->
+  <div v-if="total > 0" class="pg">
     <Paginator
       v-model:first="first" :rows="rows" :total-records="total" :page-link-size="10"
       template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink" class="pg__links"
@@ -30,5 +31,5 @@ const rows = defineModel<number>('rows', { required: true })
 <style scoped>
 .pg { position: relative; display: flex; justify-content: center; align-items: center; min-height: 32px; margin-top: var(--ws-gap-inter); }
 .pg__size { position: absolute; right: 0; width: 96px; }
-.pg :deep(.p-paginator-page) { font-size: var(--ws-font-size-md); font-variant-numeric: tabular-nums; width: auto; min-width: 32px; padding-inline: 6px; white-space: nowrap; } /* 두 자리 쪽 번호가 32px 정사각에서 꺾이던 문제 */
+.pg :deep(.p-paginator-page) { font-size: var(--ws-font-size-md); font-variant-numeric: tabular-nums; width: auto; min-width: 32px; padding-inline: var(--ws-gap-item); white-space: nowrap; } /* 두 자리 쪽 번호가 32px 정사각에서 꺾이던 문제 */
 </style>

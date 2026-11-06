@@ -110,7 +110,7 @@ const handleOf = (c: string) => HANDLE.find((h) => h.code === c)!
       <section class="ws-sec ws-card">
         <div class="ws-tit">
           <div class="ws-tit__l"><h2 class="ws-tit__h">접수 · 선정 추이</h2><span class="ws-total">최근<strong>{{ days.length }}</strong>일</span></div>
-          <div class="ws-tit__r"><Button label="사용현황" severity="secondary" outlined class="ws-line" @click="router.push('/sp/usage-stats')" /></div>
+          <div class="ws-tit__r"><Button label="사용현황" severity="secondary" outlined @click="router.push('/sp/usage-stats')" /></div>
         </div>
         <div class="ws-chartbox"><EzChart :option="trend" height="260px" /></div>
       </section>
@@ -128,7 +128,7 @@ const handleOf = (c: string) => HANDLE.find((h) => h.code === c)!
       <section class="ws-sec ws-card">
         <div class="ws-tit">
           <div class="ws-tit__l"><h2 class="ws-tit__h">조치가 필요한 적발</h2></div>
-          <div class="ws-tit__r"><Button label="전체 보기" severity="secondary" outlined class="ws-line" @click="router.push('/sp/scraping')" /></div>
+          <div class="ws-tit__r"><Button label="전체 보기" severity="secondary" outlined @click="router.push('/sp/scraping')" /></div>
         </div>
         <table class="ws-gtb recent">
           <caption class="ws-sr-only">조치필요 상태인 스크래핑 적발 최근 6건</caption>
